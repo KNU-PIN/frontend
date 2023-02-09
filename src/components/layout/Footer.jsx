@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { THEME } from "../constants/colors";
+import { THEME } from "../../constants/colors";
 import { HomeIcon, PinListIcon, CreatePinIcon } from "./Icons";
-import usePath from "../hooks/usePath";
-import useLoading from "../hooks/useLoading";
+import usePath from "../../hooks/usePath";
+import useLoading from "../../hooks/useLoading";
 
 export default function Footer({ hasFooter }) {
   const navigate = useNavigate();
