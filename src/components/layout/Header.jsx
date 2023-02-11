@@ -53,6 +53,7 @@ const Main = styled.header`
   font-weight: 700;
   vertical-align: baseline;
   gap: 0.5rem;
+  box-shadow:0px 0.2em 0.5rem lightgray;
 `;
 
 const Back = styled.button`

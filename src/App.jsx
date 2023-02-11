@@ -5,6 +5,8 @@ import Pinboard from "./pages/Pinboard";
 import Err from "./pages/Err";
 import PinList from "./pages/PinList";
 import CreatePin from "./pages/CreatePin";
+import PostDetail from "./pages/PostDetail";
+
 
 function App() {
   const navigate = useNavigate();
@@ -15,6 +17,7 @@ function App() {
         <Route path="/Pinboard" element={<Pinboard />} />
         <Route path="/PinList" element={<PinList />} />
         <Route path="/CreatePin" element={<CreatePin />} />
+        <Route path="/PostDetail" element={<PostDetail/>}></Route>
         <Route path="*" element={<Err />} />
       </Routes>
     </div>
