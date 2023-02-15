@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Layout from "../components/layout/Layout";
+import ImgUpload from "../components/ImgUpload";
 import styled from "styled-components";
 import { THEME } from "../constants/colors";
 import { useState } from "react";
@@ -9,13 +10,12 @@ export default function CreatePin() {
     <>
       <Layout title="게시글 작성" hasBackButton>
         <Wrapper>
-          <StyledH1>글 작성</StyledH1>
+          <StyledH1>핀 작성</StyledH1>
           <FormWrapper>
+            <ImgUpload></ImgUpload>
             <Wrapper>
-              <Type>Tag</Type>
-              <br />
               <StyledSelect>
-                <option>선택</option>
+                <option>Tag 선택</option>
                 <option>자유</option>
                 <option>구인구직</option>
                 <option>장터</option>
@@ -44,17 +44,20 @@ const FormWrapper = styled.form`
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   background-color: ${THEME.black100};
   gap: 1.1rem;
   width: 100%;
   padding: 1.1rem;
   border-radius: 10px;
+  justify-content: center;
+  align-items : center;
 `;
 const Type = styled.span`
   font-family: "GangwonEduPowerExtraBoldA";
   font-size: 1.2rem;
   margin-bottom: -0.5rem;
+  text-align: left;
+  padding-right:0.5rem
 `;
 const RowWrapper = styled.p`
   margin-top: 2rem;
