@@ -1,9 +1,10 @@
 import React,{useState} from 'react';
 import Layout from "../components/layout/Layout";
 import { THEME } from "../constants/colors";
-import styled from "styled-components";
+import styled,{keyframes} from "styled-components";
 import {BsSuitHeart, BsSuitHeartFill} from "react-icons/bs"
 import {RiSendPlane2Fill} from "react-icons/ri"
+import {MdOutlineCancel} from "react-icons/md"
 
 const PostImage=styled.img`
   width:90%;
@@ -91,30 +92,39 @@ const SendIconWrap=styled.div`
 `
 const DeleteDiv=styled.div`
   width:100%;
-  height: 21%;
+  height: 25%;
   background-color: white;
   position: fixed;
   z-index: 110;
   bottom:0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px -0.2em 5em lightgray;
 `
+
 const PasswordInput=styled.input`
   &:focus{
     outline: none;
   }
   border: none;
   background-color: #f1efef;
-  width:80%;
   height: 25%;
+  width:80%;
   border-radius: 8px;
   display: block;
-  padding-left:3%;
+  padding-left: 2%;
 `
 const PasswordTitle=styled.div`
   font-size:1.2rem;
   font-weight: 500;
+  margin-bottom: 10px;
+  width: 82%;
 `
 const PasswordButton=styled.button`
-  height: 20%;
+  width: 82%;
+  height: 25%;
   border: none;
   border-radius: 8px;
   background-color: #6569d1;
@@ -122,6 +132,12 @@ const PasswordButton=styled.button`
   font-size:1em;
   margin-top:8px;
   letter-spacing: 1px;
+`
+const CancelButton=styled.span`
+  font-size: 1.5em;
+  position: absolute;
+  top:10%;
+  right:3%;
 `
 function PostDetail() {
   const [heart,setHeart]=useState(
@@ -154,12 +170,16 @@ function PostDetail() {
   const onClickDeleteModal=()=>{
      setDeleteModal(true)
   }
+  const onClickCancelDelete=()=>{
+    setDeleteModal(false)
+  }
     return (
       <Layout title="게시글 상세보기" hasBackButton>
         {deleteModal?<DeleteDiv>
           <PasswordTitle>비밀번호</PasswordTitle>
-          <PasswordInput type="password"></PasswordInput>
+          <PasswordInput type="password" placeholder='게시글을 삭제하려면 비밀번호를 입력하세요.'></PasswordInput>
           <PasswordButton>삭제</PasswordButton>
+          <CancelButton onClick={onClickCancelDelete}><MdOutlineCancel/></CancelButton>
         </DeleteDiv>:<></>}
         <PostImage src={process.env.PUBLIC_URL+"/img/postDetail_example.png"} ></PostImage>
         <PostTitleButtonsDiv>
