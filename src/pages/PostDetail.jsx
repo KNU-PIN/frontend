@@ -89,6 +89,40 @@ const SendIconWrap=styled.div`
   right: 13px;
 
 `
+const DeleteDiv=styled.div`
+  width:100%;
+  height: 21%;
+  background-color: white;
+  position: fixed;
+  z-index: 110;
+  bottom:0;
+`
+const PasswordInput=styled.input`
+  &:focus{
+    outline: none;
+  }
+  border: none;
+  background-color: #f1efef;
+  width:80%;
+  height: 25%;
+  border-radius: 8px;
+  display: block;
+  padding-left:3%;
+`
+const PasswordTitle=styled.div`
+  font-size:1.2rem;
+  font-weight: 500;
+`
+const PasswordButton=styled.button`
+  height: 20%;
+  border: none;
+  border-radius: 8px;
+  background-color: #6569d1;
+  color:white;
+  font-size:1em;
+  margin-top:8px;
+  letter-spacing: 1px;
+`
 function PostDetail() {
   const [heart,setHeart]=useState(
     {
@@ -97,6 +131,7 @@ function PostDetail() {
     }
   )
   const [inputComment,setInputComment]=useState('')
+  const [deleteModal, setDeleteModal]=useState(false)
   const onClickHeart=()=>{
      setHeart((prevState)=>{
       return{
@@ -116,8 +151,16 @@ function PostDetail() {
       }
      })
   }
+  const onClickDeleteModal=()=>{
+     setDeleteModal(true)
+  }
     return (
       <Layout title="게시글 상세보기" hasBackButton>
+        {deleteModal?<DeleteDiv>
+          <PasswordTitle>비밀번호</PasswordTitle>
+          <PasswordInput type="password"></PasswordInput>
+          <PasswordButton>삭제</PasswordButton>
+        </DeleteDiv>:<></>}
         <PostImage src={process.env.PUBLIC_URL+"/img/postDetail_example.png"} ></PostImage>
         <PostTitleButtonsDiv>
           <PostTitle>상세보기 예시_제목</PostTitle>
@@ -127,7 +170,7 @@ function PostDetail() {
             {heart.count}
             </PostButtonHeart>
               <Buttons>신고</Buttons>
-              <Buttons>글 삭제</Buttons>
+              <Buttons onClick={onClickDeleteModal}>글 삭제</Buttons>
           </PostButtonsDiv>
         </PostTitleButtonsDiv>
         <PostContent>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione doloremque, eius architecto consequuntur accusamus nulla cupiditate porro eveniet adipisci, illo delectus eos, perspiciatis sunt. Quidem sint nemo iusto eius eligendi?</PostContent>

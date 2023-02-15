@@ -51,11 +51,9 @@ export default function Footer({ hasFooter }) {
 const Main = styled.footer`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-
   height: 5rem;
-
   position: fixed;
-  z-index: 100000;
+  z-index: 100;
   left: 0;
   right: 0;
   bottom: 0px;
