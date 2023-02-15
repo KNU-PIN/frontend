@@ -90,6 +90,15 @@ const SendIconWrap=styled.div`
   right: 13px;
 
 `
+const modalSlideUp=keyframes`
+  0%{
+    bottom:-25%;
+  }
+  100%{
+    bottom:0;
+  }
+`
+
 const DeleteDiv=styled.div`
   width:100%;
   height: 25%;
@@ -102,6 +111,7 @@ const DeleteDiv=styled.div`
   justify-content: center;
   align-items: center;
   box-shadow: 0px -0.2em 5em lightgray;
+  animation:${modalSlideUp} 0.5s;
 `
 
 const PasswordInput=styled.input`
@@ -175,12 +185,13 @@ function PostDetail() {
   }
     return (
       <Layout title="게시글 상세보기" hasBackButton>
-        {deleteModal?<DeleteDiv>
+        {deleteModal?<DeleteDiv visible={deleteModal}>
           <PasswordTitle>비밀번호</PasswordTitle>
           <PasswordInput type="password" placeholder='게시글을 삭제하려면 비밀번호를 입력하세요.'></PasswordInput>
           <PasswordButton>삭제</PasswordButton>
           <CancelButton onClick={onClickCancelDelete}><MdOutlineCancel/></CancelButton>
         </DeleteDiv>:<></>}
+        {console.log(deleteModal)}
         <PostImage src={process.env.PUBLIC_URL+"/img/postDetail_example.png"} ></PostImage>
         <PostTitleButtonsDiv>
           <PostTitle>상세보기 예시_제목</PostTitle>
