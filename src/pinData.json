@@ -6,15 +6,15 @@
         "type": "red"
     },
     {
-        "latitude": "35.900264",
-        "longitude": "128.620712",
-        "img": "",
-        "type": "red"
-    },
-    {
-        "latitude": "36.000001",
-        "longitude": "128.120712",
+        "latitude": "35.891264",
+        "longitude": "128.611702",
         "img": "",
         "type": "green"
+    },
+    {
+        "latitude": "35.891267",
+        "longitude": "128.612710",
+        "img": "",
+        "type": "yellow"
     }
 ]
