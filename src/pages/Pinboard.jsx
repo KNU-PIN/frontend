@@ -11,6 +11,14 @@ import Map from "../components/atoms/Map";
 
 const { kakao } = window;
 
+const FormWrapper = styled.form`
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
+
 export default function Pinboard() {
     //지도 및 핀 표시
     useEffect(() => {
@@ -30,19 +38,9 @@ export default function Pinboard() {
     return (
         <>
             <Layout title="Main Page">
-                <FormWrapper>
-                    {/* 지도 틀 */}
-                    <Map></Map>
-                </FormWrapper>
+                {/* 지도 틀 */}
+                <Map></Map>
             </Layout>
         </>
     );
 }
-
-const FormWrapper = styled.form`
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-`;
