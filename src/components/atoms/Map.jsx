@@ -23,7 +23,22 @@ const Category = styled.div`
 `;
 
 const Free = styled.button`
+<<<<<<< Updated upstream
     color: black;
+=======
+    color: white;
+    position: absolute;
+    //글씨 중간 정렬
+
+    //버튼 태그 자체가 중간정렬 해줘서 플렉스하고 중간정렬 해줄 필요 없다.
+    /* display: flex;
+    align-items: center;
+    justify-content: center; */
+
+    top: 50px;
+    left: 10px;
+    /* overflow: hidden; */
+>>>>>>> Stashed changes
     width: 130px;
     height: 30px;
     font-size: 12px;
@@ -66,8 +81,13 @@ function Map() {
             ></div>
             <Category>
                 <Free onclick="">자유글</Free>
+<<<<<<< Updated upstream
                 <Wanted onclick="">구인구직</Wanted>
                 <Market onclick="">장터</Market>  
+=======
+                {/* <Wanted onclick="">구인구직글</Wanted>
+                <Market onclick="">지도</Market> */}
+>>>>>>> Stashed changes
             </Category>
         </MapWrap>
     );
