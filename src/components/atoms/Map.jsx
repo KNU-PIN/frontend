@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Input from "./Input";
 import { useState } from "react";
+import { BiSearch } from "react-icons/bi";
 
 const MapWrap = styled.button`
     //카테고리 버튼들의 absolute 정렬을 위해 realtive 필요함.
@@ -66,13 +67,15 @@ const MarketButton = styled.button`
 `;
 
 //inputLabel css입니다.
-const InputLabel = styled.label`
+const InputDiv = styled.div`
     //필요 없음.
-    /* display: flex; */
-
+    display: flex;
+    border-radius: 2em;
+    background-color: white;
+    width: 50%;
+    height: 5%;
     //지도 위에 보이기 위한 설정입니다.
     z-index: 1;
-
     //지도 위에 고정하기 위한 설정입니다.
     position: absolute;
     top: 30px;
@@ -82,25 +85,29 @@ const InputLabel = styled.label`
 const KeywordInputStyle = styled.input`
     font-size: 0.5rem;
     line-height: 1.7rem;
-    background-color: white;
-    border-radius: 2em;
-    width: 250px;
-
+    height: 100%;
+    width: 90%;
+    background-color: transparent;
+    border: none;
     letter-spacing: 1px;
+    box-sizing: border-box;
+    &:focus {
+        outline: none;
+    }
 `;
 
 //input 안에 있는 button css입니다.
-const SubmitButton = styled.button`
-    width: 5px;
-    height: 5px;
-
-    background-color: yellow;
-    border: none;
+const SubmitButton = styled.div`
+    height: 100%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    right: 13px;
+    font-size: 1.2rem;
 `;
 
 function Map() {
-    //키워드 버튼 주소
-    const submitButtonSrc = process.env.PUBLIC_URL + "img/submitButton.png";
     //키워드
     const [keyword, setKeyword] = useState("");
 
@@ -122,7 +129,7 @@ function Map() {
                 setValue,
                 placeholder,
                 Styled = StyledInput, */}
-            <InputLabel>
+            <InputDiv>
                 <Input
                     type="text"
                     value={keyword}
@@ -130,10 +137,10 @@ function Map() {
                     placeholder="  검색 내용을 입력하세요"
                     Styled={KeywordInputStyle}
                 ></Input>
-                {/* <SubmitButton>
-                    <img src={submitButtonSrc} alt="전송 버튼" />
-                </SubmitButton> */}
-            </InputLabel>
+                <SubmitButton>
+                    <BiSearch></BiSearch>
+                </SubmitButton>
+            </InputDiv>
             <Category>
                 <FreeButton onclick="">자유글</FreeButton>
                 <WantedButton onclick="">구인구직</WantedButton>

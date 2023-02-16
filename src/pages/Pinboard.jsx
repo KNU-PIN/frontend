@@ -18,6 +18,8 @@ const FormWrapper = styled.form`
     align-items: center;
 `;
 
+// 나중에 여기서 타입을 선택하든, 검색하든 백엔드에서 핀 정보 받아와서 그 핀을 showPins로 넘겨줘야 할 듯
+
 export default function Pinboard() {
     //지도 및 핀 표시
     useEffect(() => {

@@ -57,6 +57,8 @@ export const showPins = () => {
             position: pinData[i].latlng, // 마커를 표시할 위치
             //title: pinData[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
             image: markerImage, // 마커 이미지
+            //마커를 클릭할 수 있게 해주며 지도가 클리되지 않게 해줍니다.
+            clickable: true,
         });
 
         marker.setMap(map);
