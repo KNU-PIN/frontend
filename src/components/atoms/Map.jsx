@@ -15,72 +15,42 @@ const MapWrap = styled.button`
 
 const Category = styled.div`
     display: flex;
+    width: 100%;
+    justify-content:space-evenly;
     z-index: 1;
+    position: absolute;
+    top:50px;
 `;
 
 const Free = styled.button`
-    color: white;
-    position: absolute;
-    //글씨 중간 정렬
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    top: 50px;
-    left: 10px;
-    /* overflow: hidden; */
+    color: black;
     width: 130px;
     height: 30px;
-    /* margin: 0;
-    padding: 0; */
-    z-index: 1;
     font-size: 12px;
     border: none;
     border-radius: 5px;
     background-color: #f06363;
 `;
 
-// Wanted 랑 Market은 아직 건드리지 않았어
 
-// const Wanted = styled.button`
-//     color: white;
-//     position: absolute;
-//     //글씨 중간 정렬
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     top: 50px;
-//     left: 10px;
-//     /* overflow: hidden; */
-//     width: 130px;
-//     height: 30px;
-//     /* margin: 0;
-//     padding: 0; */
-//     z-index: 1;
-//     font-size: 12px;
-//     border: none;
-//     border-radius: 5px;
-//     background-color: #f06363;
-// `;
-// const Market = styled.button`
-//     color: white;
-//     position: absolute;
-//     //글씨 중간 정렬
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     top: 50px;
-//     left: 10px;
-//     /* overflow: hidden; */
-//     width: 130px;
-//     height: 30px;
-//     /* margin: 0;
-//     padding: 0; */
-//     z-index: 1;
-//     font-size: 12px;
-//     border: none;
-//     border-radius: 5px;
-//     background-color: #f06363;
-// `;
+const Wanted = styled.button`
+    color: black;  
+    width: 130px;
+    height: 30px;
+    font-size: 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: #e2ff08;
+`;
+const Market = styled.button`
+    color: black;
+    width: 130px;
+    height: 30px;
+    font-size: 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: green;
+`;
 
 function Map() {
     return (
@@ -96,9 +66,8 @@ function Map() {
             ></div>
             <Category>
                 <Free onclick="">자유글</Free>
-                {/* <Wanted onclick="">구인구직글</Wanted>
-                <Market onclick="">지도</Market> */}
-                ㄴ
+                <Wanted onclick="">구인구직</Wanted>
+                <Market onclick="">장터</Market>  
             </Category>
         </MapWrap>
     );
