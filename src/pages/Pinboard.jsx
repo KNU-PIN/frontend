@@ -5,7 +5,6 @@ import { THEME } from "../constants/colors";
 import { useState } from "react";
 import React from "react";
 import { useEffect } from "react";
-import pins from "../pinData";
 import { showPins } from "../components/atoms/showpins";
 import Map from "../components/atoms/Map";
 
