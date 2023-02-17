@@ -36,5 +36,6 @@ const Children = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  margin-top:4rem;
   /* background-color: ${THEME.background}; */
 `;

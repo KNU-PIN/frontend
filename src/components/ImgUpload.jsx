@@ -8,7 +8,6 @@ const ImgPreview = styled.img`
   height: 250px;
   margin: 30px;
   position: relative;
-  right: 10%;
   border: 2px solid ${THEME.black400};
   border-radius: .5em;
   box-shadow: 0 1px 0 1px rgba(0,0,0,.04);
