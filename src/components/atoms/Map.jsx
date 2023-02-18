@@ -1,7 +1,119 @@
 import styled from "styled-components";
+import { useEffect } from "react";
 import Input from "./Input";
 import { useState } from "react";
 import { BiSearch } from "react-icons/bi";
+
+const { kakao } = window;
+
+//pin데이터에 카카오 위도 경도 추가
+function addKakaoLatLng(pinData) {
+    pinData.map(function (pin) {
+        pin.latlng = new kakao.maps.LatLng(pin.latitude, pin.longitude);
+        return pin;
+    });
+}
+
+export const Map = ({ pinData }) => {
+    //검색 내용
+    const [keyword, setKeyword] = useState("");
+
+    //핀데이터를 맵에 표시하기 위해 위도, 경도를 가공합니다.
+    addKakaoLatLng(pinData);
+
+    // const [is_write, setWrite] = useState(false);
+    // const normalMarker = useSelector((state) => state.marker.normal);
+    // const hotMarker = useSelector((state) => state.marker.hot);
+
+    useEffect(() => {
+        //지도 표시할 div
+        const container = document.getElementById("map");
+        const options = {
+            //지도를 생성할 때 필요한 기본 옵션
+            center: new kakao.maps.LatLng(35.890264, 128.610712), //지도의 중심좌표.
+            level: 5, //지도의 레벨(확대, 축소 정도)
+        };
+        const map = new kakao.maps.Map(container, options); //지도를 생성합니다.
+
+        //핀의 색깔 이미지 주소입니다.
+        var redImage = process.env.PUBLIC_URL + "img/red.png";
+        var greenImage = process.env.PUBLIC_URL + "img/green.png";
+        var yellowImage = process.env.PUBLIC_URL + "img/yellow.png";
+
+        //지도에 핀 표시
+        for (var i = 0; i < pinData.length; i++) {
+            // 핀 이미지의 이미지 크기 입니다
+            var imageSize = new kakao.maps.Size(30, 30);
+
+            // 핀 색깔을 설정합니다.
+            var ImageSrc = "";
+            switch (pinData[i].type) {
+                case "red":
+                    ImageSrc = redImage;
+                    break;
+                case "green":
+                    ImageSrc = greenImage;
+                    break;
+                default:
+                    ImageSrc = yellowImage;
+            }
+
+            //핀 이미지 생성
+            var markerImage = new kakao.maps.MarkerImage(ImageSrc, imageSize);
+
+            //핀 표시
+            var marker = new kakao.maps.Marker({
+                map: map, // 마커를 표시할 지도
+                position: pinData[i].latlng, // 마커를 표시할 위치
+                //title: pinData[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+                image: markerImage, // 마커 이미지
+                //마커를 클릭할 수 있게 해주며 지도가 클리되지 않게 해줍니다.
+                clickable: true,
+            });
+
+            marker.setMap(map);
+        }
+        // 마커가 생성될때 바로 화면상에 새로생성된 마커를 보여주기 위해 배열안에 props를 넣어놨습니다.
+    }, [pinData]);
+
+    return (
+        <MapWrap>
+            <div
+                id="map"
+                style={{
+                    width: "100%",
+                    height: "600px",
+                    position: "relative",
+                    overflow: "hidden",
+                }}
+            ></div>
+            {/* Input 컴포넌트 재활용을 위한 props 사용 */}
+            {/*Input props
+                type,
+                value,
+                setValue,
+                placeholder,
+                Styled = StyledInput, */}
+            <InputDiv>
+                <Input
+                    type="text"
+                    value={keyword}
+                    setValue={setKeyword}
+                    placeholder="  검색 내용을 입력하세요"
+                    Styled={KeywordInputStyle}
+                ></Input>
+                <SubmitButton>
+                    <BiSearch></BiSearch>
+                </SubmitButton>
+            </InputDiv>
+            <Category>
+                <FreeButton onclick="">자유글</FreeButton>
+                <WantedButton onclick="">구인구직</WantedButton>
+                <MarketButton onclick="">장터</MarketButton>
+            </Category>
+        </MapWrap>
+    );
+};
 
 const MapWrap = styled.button`
     //카테고리 버튼들의 absolute 정렬을 위해 realtive 필요함.
@@ -99,55 +211,12 @@ const KeywordInputStyle = styled.input`
 //input 안에 있는 button css입니다.
 const SubmitButton = styled.div`
     height: 100%;
-    position: absolute;
     display: flex;
     align-items: center;
     background-color: white;
+    position: absolute;
     right: 13px;
     font-size: 1.2rem;
 `;
-
-function Map() {
-    //키워드
-    const [keyword, setKeyword] = useState("");
-
-    return (
-        <MapWrap>
-            <div
-                id="map"
-                style={{
-                    width: "100%",
-                    height: "600px",
-                    position: "relative",
-                    overflow: "hidden",
-                }}
-            ></div>
-            {/* Input 컴포넌트 재활용을 위한 props 사용 */}
-            {/*Input props
-                type,
-                value,
-                setValue,
-                placeholder,
-                Styled = StyledInput, */}
-            <InputDiv>
-                <Input
-                    type="text"
-                    value={keyword}
-                    setValue={setKeyword}
-                    placeholder="  검색 내용을 입력하세요"
-                    Styled={KeywordInputStyle}
-                ></Input>
-                <SubmitButton>
-                    <BiSearch></BiSearch>
-                </SubmitButton>
-            </InputDiv>
-            <Category>
-                <FreeButton onclick="">자유글</FreeButton>
-                <WantedButton onclick="">구인구직</WantedButton>
-                <MarketButton onclick="">장터</MarketButton>
-            </Category>
-        </MapWrap>
-    );
-}
 
 export default Map;
