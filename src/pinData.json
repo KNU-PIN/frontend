@@ -1,0 +1,20 @@
+[
+    {
+        "latitude": "35.890264",
+        "longitude": "128.610712",
+        "img": "",
+        "type": "red"
+    },
+    {
+        "latitude": "35.891264",
+        "longitude": "128.611702",
+        "img": "",
+        "type": "green"
+    },
+    {
+        "latitude": "35.891267",
+        "longitude": "128.612710",
+        "img": "",
+        "type": "yellow"
+    }
+]

@@ -37,5 +37,6 @@ const Children = styled.div`
   display: flex;
   flex-direction: column;
   margin-top:4rem;
+  align-items: center;
   /* background-color: ${THEME.background}; */
 `;
