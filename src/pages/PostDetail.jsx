@@ -5,6 +5,7 @@ import styled,{keyframes} from "styled-components";
 import {BsSuitHeart, BsSuitHeartFill} from "react-icons/bs"
 import {RiSendPlane2Fill} from "react-icons/ri"
 import {MdOutlineCancel} from "react-icons/md"
+import PostSlider from '../components/atoms/PostSlider';
 
 const PostImage=styled.img`
   width:90%;
@@ -15,6 +16,7 @@ const PostTitleButtonsDiv=styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top:20px;
 `
 const PostTitle=styled.h1`
 
@@ -191,8 +193,7 @@ function PostDetail() {
           <PasswordButton>삭제</PasswordButton>
           <CancelButton onClick={onClickCancelDelete}><MdOutlineCancel/></CancelButton>
         </DeleteDiv>:<></>}
-        {console.log(deleteModal)}
-        <PostImage src={process.env.PUBLIC_URL+"/img/postDetail_example.png"} ></PostImage>
+        <PostSlider images={images}></PostSlider>
         <PostTitleButtonsDiv>
           <PostTitle>상세보기 예시_제목</PostTitle>
           <PostButtonsDiv>
@@ -222,6 +223,29 @@ function PostDetail() {
       </Layout> 
     );
 }
+
+const images=[
+  {
+    id:1,
+    src:"/img/postDetail_example.png"
+  },
+  {
+    id:2,
+    src:"/img/postDetail_example.png"
+  },
+  {
+    id:3,
+    src:"/img/postDetail_example.png"
+  },
+  {
+    id:4,
+    src:"/img/postDetail_example.png"
+  },
+  {
+    id:5,
+    src:"/img/postDetail_example.png"
+  },
+]
 
 const CommentsData=[
   {writer:"익명1", content:"댓글 예시1"},
