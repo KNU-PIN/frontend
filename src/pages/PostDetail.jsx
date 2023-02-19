@@ -7,10 +7,7 @@ import {RiSendPlane2Fill} from "react-icons/ri"
 import {MdOutlineCancel} from "react-icons/md"
 import PostSlider from '../components/atoms/PostSlider';
 
-const PostImage=styled.img`
-  width:90%;
-  border-radius:15%;
-`
+
 const PostTitleButtonsDiv=styled.div`
   width:90%;
   display: flex;
@@ -43,6 +40,7 @@ const PostContent=styled.p`
   width: 90%;
   padding-bottom:5%;
   font-size:1.2rem;
+  margin-top:0;
 `
 const CommentsDiv=styled.div`
   width:90%;
