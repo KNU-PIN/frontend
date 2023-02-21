@@ -1,16 +1,18 @@
 import { useNavigate } from "react-router-dom";
-import Layout from "../components/layout/Layout";
-import styled from "styled-components";
-import { THEME } from "../constants/colors";
+import Layout from "../layout/Layout";
+import styled, { keyframes } from "styled-components";
+import { THEME } from "../../constants/colors";
 import axios from "axios";
 import React, { useState, useRef } from "react";
+import Slider from "react-slick";
 
-export default function CreatePin() {
+export default function WriteModal() {
   const [title, setTitle] = useState();
   const [contents, setContents] = useState();
   const [pw, setPw] = useState();
   const [type, setType] = useState();
 
+  const [img, setImg] = useState(null);
   const [imgFile, setImgFile] = useState("");
 
   const imgRef = useRef();
@@ -24,13 +26,18 @@ export default function CreatePin() {
     };
   };
 
+  const onImg = (img) => {
+    setImg(img);
+  };
+
   const onCreate = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
-    let img = imgRef.current.files;
-    for (let i = 0; i < img.length; i++) {
-      formData.append("images[]", img[i]);
+    if (img) {
+      img.forEach((e) => {
+        formData.append("images[]", e);
+      });
     }
 
     let variables = {
@@ -55,10 +62,9 @@ export default function CreatePin() {
       console.log(e);
     }
   };
-
   return (
     <>
-      <Layout title="게시글 작성" hasBackButton>
+      <Container>
         <FormWrapper>
           <Wrapper className="img-preview">
             <ImgPreview id="img-preview" src={imgFile ? imgFile : process.env.PUBLIC_URL + "/img/CreatePin_sampleimg.png"}></ImgPreview>
@@ -69,6 +75,7 @@ export default function CreatePin() {
               id="uploadImg"
               onChange={saveImgFile}
               ref={imgRef}
+              onImg={onImg}
             ></UploadImage>
           </Wrapper>
           <br></br>
@@ -104,12 +111,36 @@ export default function CreatePin() {
             <StyledButton onClick={onCreate}>완료</StyledButton>
           </Wrapper>
         </FormWrapper>
-      </Layout>
+      </Container>
       ;
     </>
   );
 }
-//버튼 태그는 content 자동 중앙 정렬 해줍니다.
+const modalSlideUp = keyframes`
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+`;
+const Container = styled.div`
+  width: 100%;
+  height: 100%;
+
+  background-color: white;
+
+  z-index: 1;
+  overflow: scroll;
+  //아래에서
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 const FreeButton = styled.button`
   color: black;
   width: 30%;
@@ -185,8 +216,6 @@ const UploadImage = styled.input`
 `;
 
 const FormWrapper = styled.form`
-  height: 80%;
-  width:90%
   display: flex;
   margin: auto;
   flex-direction: column;
@@ -203,8 +232,6 @@ const Type = styled.span`
 `;
 const Wrapper = styled.div`
   padding: 0.5rem;
-  justify-content: center;
-  align-items: center;
 `;
 
 const StyledH1 = styled.h1`
