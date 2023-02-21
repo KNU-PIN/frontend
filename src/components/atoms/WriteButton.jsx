@@ -36,6 +36,7 @@ const StyledButton = styled.button`
     font-weight: bold;
     background-color: transparent;
 
+
     left: 45%;
     bottom: 5px;
     position: fixed;
