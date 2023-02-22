@@ -1,5 +1,7 @@
 import { Routes, Route, useNavigate, Outlet } from "react-router-dom";
 
+import GlobalStyle from "./components/layout/GlobalStyle";
+
 import Landing from "./pages/Landing";
 import Pinboard from "./pages/Pinboard";
 import Err from "./pages/Err";
@@ -12,6 +14,7 @@ function App() {
   const navigate = useNavigate();
   return (
     <div className="App">
+      <GlobalStyle/>
       <Routes>
         <Route path="/" element={<Pinboard />} />
         <Route path="/Pinboard" element={<Pinboard />} />
