@@ -38,8 +38,8 @@ export default function CreatePin() {
       contents: contents,
       pw: pw,
       type: type,
-      latitude: "",
-      longitude: "",
+      latitude: 35.9004,
+      longitude: 128.6000,
     };
 
     for (let key in variables) {
