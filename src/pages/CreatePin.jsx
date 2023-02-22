@@ -33,14 +33,15 @@ export default function CreatePin() {
             formData.append("images[]", img[i]);
         }
 
-        let variables = {
-            title: title,
-            contents: contents,
-            pw: pw,
-            type: type,
-            latitude: "",
-            longitude: "",
-        };
+
+    let variables = {
+      title: title,
+      contents: contents,
+      pw: pw,
+      type: type,
+      latitude: 35.9004,
+      longitude: 128.6000,
+    };
 
         for (let key in variables) {
             formData.append(key, variables[key]);
