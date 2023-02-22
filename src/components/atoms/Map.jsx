@@ -5,6 +5,7 @@ import Modal from "./Modal";
 import aroundPins from "../../mockData.json";
 import FilterInputCategory from "./FilterInputCategory";
 import startData from "../../startData.json";
+import "./Image.css";
 
 const { kakao } = window;
 
@@ -45,6 +46,9 @@ function Map() {
         setModalOpen(false);
     }
 
+    function handleImgClick() {
+        setModalOpen(true);
+    }
     useEffect(() => {
         //지도 표시할 div
         const container = document.getElementById("map");
@@ -63,23 +67,25 @@ function Map() {
         //지도에 핀 표시
         for (let i = 0; i < pinData.length; i++) {
             // 핀 이미지의 이미지 크기 입니다
-            var imageSize = new kakao.maps.Size(30, 30);
+            var pinSize = new kakao.maps.Size(50, 50);
 
-            // 핀 색깔을 설정합니다.
-            var ImageSrc = "";
+            //이미지 주소를 넣어줍니다.
+            var pinSrc = "";
+
+            //핀 색깔을 설정합니다.
             switch (pinData[i].type) {
                 case "red":
-                    ImageSrc = redImage;
+                    pinSrc = redImage;
                     break;
                 case "green":
-                    ImageSrc = greenImage;
+                    pinSrc = greenImage;
                     break;
                 default:
-                    ImageSrc = yellowImage;
+                    pinSrc = yellowImage;
             }
 
             //핀 이미지 생성
-            var markerImage = new kakao.maps.MarkerImage(ImageSrc, imageSize);
+            var markerImage = new kakao.maps.MarkerImage(pinSrc, pinSize);
 
             //핀 표시
             const marker = new kakao.maps.Marker({
@@ -92,6 +98,58 @@ function Map() {
             });
 
             marker.setMap(map);
+
+            var img =
+                `<div class="box" onClick={handleImgClick}>` +
+                `    <img class="profile" src=${pinData[i].img}>` +
+                `</div>`;
+
+            // 커스텀 오버레이를 생성합니다
+            const customOverlay = new kakao.maps.CustomOverlay({
+                position: pinData[i].latlng, // 이미지를 표시할 위치
+                content: img,
+                xAnchor: 0.47,
+                yAnchor: 1.45,
+            });
+
+            customOverlay.setMap(map);
+            // var content =
+            //     '<div class="wrap">' +
+            //     '    <div class="info">' +
+            //     '        <div class="title">' +
+            //     "            카카오 스페이스닷원" +
+            //     '            <div class="close" onClick="closeOverlay()" title="닫기"></div>' +
+            //     "        </div>" +
+            //     '        <div class="body">' +
+            //     '            <div class="img">' +
+            //     '                <img src="https://cfile181.uf.daum.net/image/250649365602043421936D" width="73" height="70">' +
+            //     "           </div>" +
+            //     '            <div class="desc">' +
+            //     '                <div class="ellipsis">제주특별자치도 제주시 첨단로 242</div>' +
+            //     '                <div class="jibun ellipsis">(우) 63309 (지번) 영평동 2181</div>' +
+            //     '                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' +
+            //     "            </div>" +
+            //     "        </div>" +
+            //     "    </div>" +
+            //     "</div>";
+
+            // // 마커 위에 커스텀오버레이를 표시합니다
+            // // 마커를 중심으로 커스텀 오버레이를 표시하기위해 CSS를 이용해 위치를 설정했습니다
+            // const overlay = new kakao.maps.CustomOverlay({
+            //     content: content,
+            //     map: map,
+            //     position: marker.getPosition(),
+            // });
+
+            // 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
+            // kakao.maps.event.addListener(marker, "click", function () {
+            //     overlay.setMap(map);
+            // });
+
+            // // 커스텀 오버레이를 닫기 위해 호출되는 함수입니다
+            // function closeOverlay() {
+            //     overlay.setMap(null);
+            // }
 
             //지도 클릭했을 때 마커 생성해주는 코드입니다.
             // kakao.maps.event.addListener(map, "click", function (mouseEvent) {
@@ -108,12 +166,13 @@ function Map() {
             //     console.log(message);
             // });
 
-            //모달 open
+            //핀 이미지 클릭 하면 모달이 올라옵니다.
             kakao.maps.event.addListener(marker, "click", function () {
                 //근처 핀들을 불러오는 함수 추가해야 하고 모달 컴포넌트에 핀 데이터 내려줘야 한다.
                 showModal();
             });
-            //모달 close
+
+            //지도를 클릭하면 모달이 닫힙니다.
             kakao.maps.event.addListener(map, "click", function () {
                 closeModal();
             });
@@ -136,10 +195,7 @@ function Map() {
             <FilterInputCategory setPinData={setPinData}></FilterInputCategory>
             {/* 모달창을 끌 수 있게 하기 위해 props로 setModalOpen을 내려줍니다. */}
             {modalOpen && (
-                <Modal
-                    setModalOpen={setModalOpen}
-                    aroundPins={aroundPins}
-                ></Modal>
+                <Modal visible={modalOpen} aroundPins={aroundPins}></Modal>
             )}
         </MapWrap>
     );
