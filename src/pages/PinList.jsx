@@ -4,10 +4,13 @@ import styled from "styled-components";
 import { THEME } from "../constants/colors";
 import { useState } from "react";
 import WriteButton from "../components/atoms/WriteButton";
+
+
 export default function PinList() {
   return (
     <>
       <WriteButton></WriteButton>
+
     </>
   );
 }
