@@ -5,7 +5,6 @@ import { THEME } from "../constants/colors";
 import { useState } from "react";
 import React from "react";
 import Map from "../components/atoms/Map";
-import pinData from "../pinData";
 
 const FormWrapper = styled.form`
     height: 100%;
@@ -29,7 +28,7 @@ export default function Pinboard() {
         <>
             <Layout title="Main Page">
                 {/* 지도 틀 */}
-                <Map pinData={pinData}></Map>
+                <Map></Map>
             </Layout>
         </>
     );
