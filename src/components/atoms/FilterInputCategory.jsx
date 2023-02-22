@@ -5,8 +5,6 @@ import { useState, useEffect } from "react";
 import { BiSearch } from "react-icons/bi";
 import pinData from "../../pinData.json";
 
-console.log(pinData);
-
 export default function FilterInputCategory({ setPinData }) {
     //검색 내용
     const [keyword, setKeyword] = useState("");

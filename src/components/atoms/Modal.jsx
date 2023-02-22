@@ -1,8 +1,26 @@
 import React from "react";
 import { BiCommentDots } from "react-icons/bi";
 import { BsSuitHeart } from "react-icons/bs";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useState } from "react";
+
+const modalSlideUp = keyframes`
+  0%{
+    bottom:-25%;
+  }
+  100%{
+    bottom:0;
+  }
+`;
+
+const modalSlideDown = keyframes`
+  0%{
+    bottom:0;
+  }
+  100%{
+        bottom:-25%;
+  }
+`;
 
 const Container = styled.div`
     border-radius: 4em;
@@ -19,6 +37,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    animation: ${modalSlideUp} 0.5s;
 `;
 
 const Header = styled.div`

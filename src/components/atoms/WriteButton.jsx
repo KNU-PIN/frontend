@@ -32,6 +32,7 @@ const StyledDiv = styled.div`
     justify-content: center;
 `;
 const StyledButton = styled.button`
+
   right: 20%;
   bottom:2rem;
   position:fixed;

@@ -7,23 +7,25 @@ import React, { useState, useRef } from "react";
 import Img from "./Img";
 
 export default function WriteModal() {
-  const [title, setTitle] = useState();
-  const [contents, setContents] = useState();
-  const [pw, setPw] = useState();
-  const [type, setType] = useState();
+    const [title, setTitle] = useState();
+    const [contents, setContents] = useState();
+    const [pw, setPw] = useState();
+    const [type, setType] = useState();
+
 
   const [imgFile, setImgFile] = useState("");
 
-  const imgRef = useRef();
+    const imgRef = useRef();
 
-  const saveImgFile = () => {
-    const file = imgRef.current.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setImgFile(reader.result);
+    const saveImgFile = () => {
+        const file = imgRef.current.files[0];
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+            setImgFile(reader.result);
+        };
     };
-  };
+
 
   const onCreate = async (e) => {
     e.preventDefault();
@@ -43,9 +45,10 @@ export default function WriteModal() {
       longitude: 128.6,
     };
 
-    for (let key in variables) {
-      formData.append(key, variables[key]);
-    }
+
+        for (let key in variables) {
+            formData.append(key, variables[key]);
+        }
 
     //Post 기능
     try {
@@ -156,11 +159,13 @@ const modalSlideDown = keyframes`
   }
 `;
 const Container = styled.div`
+
   border-radius: 4rem 4rem 0 0;
   width: 100%;
   height: 50%;
 
-  background-color: white;
+    background-color: white;
+
 
   z-index: 1;
   overflow: scroll;
@@ -219,42 +224,43 @@ const MarketButton = styled.button`
   }
 `;
 const Category = styled.div`
-  display: flex;
+    display: flex;
 
-  //자식 요소 가운데 정렬을 위해 가로 100을 주고 justify-content설정 해줍니다.
-  //justify-conetnet에는 space-envenly, space-around, space-between등의 설정도 있습니다.
-  width: 100%;
-  justify-content: center;
+    //자식 요소 가운데 정렬을 위해 가로 100을 주고 justify-content설정 해줍니다.
+    //justify-conetnet에는 space-envenly, space-around, space-between등의 설정도 있습니다.
+    width: 100%;
+    justify-content: center;
 `;
 const ImgPreview = styled.img`
-  width: 60%;
-  height: 60%;
-  position: relative;
-  border: 2px solid ${THEME.black400};
-  border-radius: 0.5em;
-  box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
-  display: flex;
-  margin: auto;
+    width: 60%;
+    height: 60%;
+    position: relative;
+    border: 2px solid ${THEME.black400};
+    border-radius: 0.5em;
+    box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+    display: flex;
+    margin: auto;
 `;
 
 const UploadImage = styled.input`
-  position: relative;
-  display: flex;
-  margin: 1rem auto;
-  width: 40%;
-  justify-content: center;
-  align-items: center;
+    position: relative;
+    display: flex;
+    margin: 1rem auto;
+    width: 40%;
+    justify-content: center;
+    align-items: center;
 `;
 
 const FormWrapper = styled.form`
-  display: flex;
-  margin: auto;
-  flex-direction: column;
-  background-color: white;
-  gap: 1.1rem;
-  border-radius: 10px;
+    display: flex;
+    margin: auto;
+    flex-direction: column;
+    background-color: white;
+    gap: 1.1rem;
+    border-radius: 10px;
 `;
 const Type = styled.span`
+
   font-family: "GangwonEduPowerExtraBoldA";
   font-size: 1rem;
   margin-bottom: -0.5rem;
@@ -262,79 +268,81 @@ const Type = styled.span`
   text-align: left;
 `;
 const Wrapper = styled.div`
-  padding: 0.5rem;
+    padding: 0.5rem;
 `;
+
 const StyledInput = styled.input`
-  font-size: 1rem;
-  line-height: 2rem;
-  color: black;
-  text-align: left;
-  border: 2px solid ${THEME.black400};
-  border-radius: 0.5em;
-  padding: 0.5rem;
-  width: 90%;
-  transition: 0.5s;
-  ::placeholder {
+    font-size: 1rem;
+    line-height: 2rem;
     color: black;
     text-align: left;
-  }
-  &:focus {
-    outline: none;
-    border: 2px solid ${THEME.primary};
-  }
-  display: flex;
-  margin: auto;
-  box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+    border: 2px solid ${THEME.black400};
+    border-radius: 0.5em;
+    padding: 0.5rem;
+    width: 90%;
+    transition: 0.5s;
+    ::placeholder {
+        color: black;
+        text-align: left;
+    }
+    &:focus {
+        outline: none;
+        border: 2px solid ${THEME.primary};
+    }
+    display: flex;
+    margin: auto;
+    box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
 `;
 const StyledInput2 = styled.input`
-  font-size: 1rem;
-  line-height: 1rem;
-  color: black;
-  background-color: ${THEME.black400};
-  text-align: left;
-  border: 2px solid ${THEME.black400};
-  border-radius: 0.5em;
-  padding: 0.5rem;
-  width: 90%;
-  display: flex;
-  margin: auto;
-  box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+    font-size: 1rem;
+    line-height: 1rem;
+    color: black;
+    background-color: ${THEME.black400};
+    text-align: left;
+    border: 2px solid ${THEME.black400};
+    border-radius: 0.5em;
+    padding: 0.5rem;
+    width: 90%;
+    display: flex;
+    margin: auto;
+    box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
 `;
 const StyledButton = styled.button`
-  font-size: 1.2rem;
-  line-height: 1.5rem;
-  background-color: #7a84db;
-  border: 2px solid #7a84db;
-  color: white;
-  border-radius: 0.5em;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-  display: flex;
-  margin: auto;
-  width: 40%;
-  justify-content: center;
-  align-items: center;
+    font-size: 1.2rem;
+    line-height: 1.5rem;
+    background-color: #7a84db;
+    border: 2px solid #7a84db;
+    color: white;
+    border-radius: 0.5em;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: flex;
+    margin: auto;
+    width: 40%;
+    justify-content: center;
+    align-items: center;
 `;
 const StyledTextarea = styled.textarea`
-  font-size: 1rem;
-  line-height: 2rem;
-  color: black;
-  text-align: left;
-  border: 2px solid ${THEME.black400};
-  border-radius: 0.5em;
-  padding: 0.5rem;
-  width: 90%;
-  height: 9rem;
-  transition: 0.5s;
-  ::placeholder {
+    font-size: 1rem;
+    line-height: 2rem;
     color: black;
     text-align: left;
-  }
-  &:focus {
-    outline: none;
-    border: 2px solid ${THEME.primary};
-  }
-  display: flex;
-  margin: auto;
-  box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+    border: 2px solid ${THEME.black400};
+    border-radius: 0.5em;
+    padding: 0.5rem;
+    width: 90%;
+    height: 9rem;
+    transition: 0.5s;
+    ::placeholder {
+        color: black;
+        text-align: left;
+    }
+    &:focus {
+        outline: none;
+        border: 2px solid ${THEME.primary};
+    }
+    display: flex;
+    margin: auto;
+    box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
 `;
+
