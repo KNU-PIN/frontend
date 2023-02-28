@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import Layout from "../components/layout/Layout";
 import { THEME } from "../constants/colors";
 import styled,{keyframes} from "styled-components";
@@ -6,6 +6,7 @@ import {BsSuitHeart, BsSuitHeartFill} from "react-icons/bs"
 import {RiSendPlane2Fill} from "react-icons/ri"
 import {MdOutlineCancel} from "react-icons/md"
 import PostSlider from '../components/atoms/PostSlider';
+import axios from "axios";
 
 
 const PostTitleButtonsDiv=styled.div`
@@ -150,33 +151,80 @@ const CancelButton=styled.span`
   right:3%;
 `
 function PostDetail() {
+  const [inputComment,setInputComment]=useState('')
+  const [deleteModal, setDeleteModal]=useState(false)
+  const [postData,setPostData]=useState({
+    latitude:"",
+    longitude:"",
+    title:"",
+    contents:"",
+    type:"",
+    images:[],
+    createdAt:"",
+    like:0
+  })
+  const [commentsData, setCommentsData]=useState([])
   const [heart,setHeart]=useState(
     {
       count:0,
       able:true
     }
   )
-  const [inputComment,setInputComment]=useState('')
-  const [deleteModal, setDeleteModal]=useState(false)
+  useEffect(()=>{
+    //게시글 정보 
+    const response = axios.get('/api/v1/pinboard/11')
+    .then(res=>res.data)
+    .then(data=>{
+      setPostData({...postData, 
+      latitude:data.latitude,
+      longitude:data.longitude,
+      title:data.title,
+      contents:data.contents,
+      type:data.type,
+      images:data.images,
+      createdAt:data.createdAt,
+      like:data.like
+    })
+    setHeart({...heart, count:data.like})
+  })
+  //게시글 댓글 정보
+  const comments=axios.get('/api/v1/comment/2')
+  .then(res=>res.data)
+  .then(data=>{
+    setCommentsData(data.comments)
+  })
+  
+  },[])
+  
   const onClickHeart=()=>{
-     setHeart((prevState)=>{
-      return{
-        ...prevState,
-      count:heart.count+1,
-      able:!heart.able
+    try{
+      const response=axios.post('/api/v1/pinboard/ddabong',JSON.stringify({
+        pinId:11
+      }),
+      {
+        headers:{
+        "Content-Type":`application/json`,
+        "Conte":"applic",
+        "X-FORWARDED-FOR":"1.1.1.2"
       }
-     })
+    }).then(res=>res.data)
+    .then(data=>setHeart({...heart, count:data, able:false}))
+    }catch(e){
+      console.log(e)
+    }
+     
+    // setHeart({...heart, count:data.data, able:false})
+    //  setHeart((prevState)=>{
+    //   return{
+    //     ...prevState,
+    //   count:heart.count+1,
+    //   able:!heart.able
+    //   }
+    //  })
     
   }
-  const onUnclickHeart=()=>{
-    setHeart((prevState)=>{
-      return{
-        ...prevState,
-      count:heart.count-1,
-      able:!heart.able
-      }
-     })
-  }
+  
+  
   const onClickDeleteModal=()=>{
      setDeleteModal(true)
   }
@@ -193,26 +241,26 @@ function PostDetail() {
         </DeleteDiv>:<></>}
         <PostSlider images={images}></PostSlider>
         <PostTitleButtonsDiv>
-          <PostTitle>상세보기 예시_제목</PostTitle>
+          <PostTitle>{postData?.title}</PostTitle>
           <PostButtonsDiv>
             <PostButtonHeart>
-              {heart.able?<BsSuitHeart onClick={onClickHeart}/>:<BsSuitHeartFill onClick={onUnclickHeart}/>}
-            {heart.count}
+              {heart?.able?<BsSuitHeart onClick={onClickHeart}/>:<BsSuitHeartFill/>}
+            {heart?.count}
             </PostButtonHeart>
               <Buttons>신고</Buttons>
               <Buttons onClick={onClickDeleteModal}>글 삭제</Buttons>
           </PostButtonsDiv>
         </PostTitleButtonsDiv>
-        <PostContent>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione doloremque, eius architecto consequuntur accusamus nulla cupiditate porro eveniet adipisci, illo delectus eos, perspiciatis sunt. Quidem sint nemo iusto eius eligendi?</PostContent>
+        <PostContent>{postData?.contents}</PostContent>
         <CommentsDiv>
-          {CommentsData.map((data,index)=>{
+          {commentsData?.map((data,index)=>{
             return(
-              <Comment key={index}><CommentWriter>{data.writer}</CommentWriter>{data.content}</Comment>
+              <Comment key={index}><CommentWriter>{data.name}</CommentWriter>{data.contents}</Comment>
             )
           })}
         </CommentsDiv>
         <InputCommentDiv>
-          <InputCommentWriter>익명{CommentsData.length+1}</InputCommentWriter>
+          <InputCommentWriter>익명{commentsData?.length}</InputCommentWriter>
           <InputComment placeholder='댓글을 입력하세요.' onChange={(e)=>{setInputComment(e.target.value)}}></InputComment>
           <SendIconWrap>
             <RiSendPlane2Fill/>
@@ -245,9 +293,5 @@ const images=[
   },
 ]
 
-const CommentsData=[
-  {writer:"익명1", content:"댓글 예시1"},
-  {writer:"익명2", content:"댓글 예시2"},
-  {writer:"익명3", content:"댓글 예시3"},
-]
+
 export default PostDetail;
