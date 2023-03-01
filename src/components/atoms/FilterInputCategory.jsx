@@ -14,7 +14,7 @@ export default function FilterInputCategory({ setType, setKeyword }) {
     };
     //버튼을 누르면 input의 value가 keyword에 담깁니다.
     const handleInput = () => {
-        setKeyword(inputTag.current.value);
+        setKeyword(inputTag.current.value || "");
     };
 
     // 1. 위에서 초기 데이터를 가지고 와서 뿌려주고, 만약 FilterInputCategory가 실행이 되면

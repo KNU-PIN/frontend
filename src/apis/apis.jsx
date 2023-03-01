@@ -1,15 +1,15 @@
 import axios from "axios";
 
+const BASE_URL = `/api/v1/pinboard`;
+
 export async function getPinData(types, keyword) {
     try {
-        console.log(keyword, types);
-        const response = await axios.get(`/api/v1/pinboard/searchpin`, {
+        const response = await axios.get(`${BASE_URL}/searchpin`, {
             params: {
                 types: types,
                 keyword: keyword,
             },
         });
-
         return response.data;
     } catch (e) {
         console.log("안됐음");
@@ -19,26 +19,19 @@ export async function getPinData(types, keyword) {
     }
 }
 
-// export const getPinData = async () => {
-//     // 국토교통부 xml
-//     const baseurl = "/api/v1/pinboard/searchpin";
-//     // const key = "발급받은키";
-//     const params = {
-//         // 필요한 query params를 {} 형태에 담아준다.
-//         // serviceKey: key,
-//         types: ["gathering", "buy"],
-//         keyword: "",
-//     };
-
-//     const queryString = new URLSearchParams(params).toString(); // url에 쓰기 적합한 querySting으로 return 해준다.
-//     const requrl = `${baseurl}?${queryString}`; // 완성된 요청 url.
-
-//     try {
-//         const response = await fetch(requrl);
-//         const body = await response.text(); // 해석할 xml문자열.
-//         const js = JSON.parse(body);
-//         return js;
-//     } catch (error) {
-//         console.log(error);
-//     }
-// };
+export async function getBoard(type, latitude, longitude, keyword) {
+    try {
+        const response = await axios.get(`${BASE_URL}/searchboard`, {
+            params: {
+                type: type,
+                keyword: keyword,
+                latitude: latitude,
+                longitude: longitude,
+            },
+        });
+        return response.data;
+    } catch (e) {
+        console.log("getBoard실패");
+        console.log(e.response);
+    }
+}

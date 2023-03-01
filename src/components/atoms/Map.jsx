@@ -4,31 +4,44 @@ import { useState } from "react";
 import Modal from "./Modal";
 import aroundPins from "../../mockData.json";
 import FilterInputCategory from "./FilterInputCategory";
-import startData from "../../startData.json";
 import "./Image.css";
-import { getPinData } from "../../apis/apis";
+import { getBoard, getPinData } from "../../apis/apis";
 
 const { kakao } = window;
 
-//pin데이터에 카카오 위도 경도 추가
-
-//pinData는 지도에 띄어지는 pinData입니다.
-//pin하나를 클릭했을 때 백엔드에서 받아오는 pin데이터는 aroundPins입니다.
 function Map() {
-    //초기 pinData를 1개 설정해놨습니다.
-    //핀을 클릭하면 모달이 오픈됩니다.
     const [modalOpen, setModalOpen] = useState(false);
     const [keyword, setKeyword] = useState("");
     const [type, setType] = useState("free, gathering, buy");
     const [pinData, setPinData] = useState([]);
+    const [boardData, setBoardData] = useState([]);
+
+    //초기 화면에 핀을 뿌려줍니다.
+    const LoadPin = async (type, keyword) => {
+        const pinData = await getPinData(type, keyword);
+        setPinData(Object.values(pinData));
+    };
 
     useEffect(() => {
-        const response = getPinData(type, keyword).then((res) =>
-            setPinData(Object.values(res))
-        );
+        LoadPin(type, keyword);
+        console.log(keyword);
     }, [type, keyword]);
 
-    // for (var prop in pinData) {
+    //핀을 클릭했을 때 주위의 보드 데이터를 가져옵니다.
+    const LoadBoard = async (type, latitude, longitude, keyword) => {
+        console.log(type, keyword);
+        const boardList = await getBoard(type, latitude, longitude, keyword);
+        setBoardData(boardList);
+    };
+
+    console.log(boardData);
+    console.log("check");
+
+    // useEffect(() => {
+
+    // }, [type, keyword]);
+
+    // // for (var prop in pinData) {
     //     console.log(prop, pinData[prop]);
     // }
     //const [pinclicked, setPinClicked] = useState("false");
@@ -115,7 +128,7 @@ function Map() {
 
             //핀 위의 이미지 핀
             var Image = new kakao.maps.MarkerImage(
-                pinData[i].img,
+                pinData[i].img_src,
                 new kakao.maps.Size(20, 20),
                 {
                     offset: new kakao.maps.Point(9, 37),
@@ -125,7 +138,10 @@ function Map() {
             //이미지 핀 표시
             const imageMarker = new kakao.maps.Marker({
                 map: map, // 마커를 표시할 지도
-                position: pinData[i].latlng, // 마커를 표시할 위치
+                position: new kakao.maps.LatLng(
+                    pinData[i].latitude,
+                    pinData[i].longitude
+                ), // 마커를 표시할 위치
                 //title: pinData[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
                 image: Image, // 마커 이미지
                 //마커를 클릭할 수 있게 해주며 지도가 클리되지 않게 해줍니다.
@@ -134,14 +150,33 @@ function Map() {
 
             imageMarker.setMap(map);
 
+            // const LoadPost = async (type, keyword, pinData[i].latitude,pinData[i].longitude) => {
+
+            // };
+
             //핀 이미지 클릭 하면 모달이 올라옵니다.
             kakao.maps.event.addListener(marker, "click", function () {
-                //근처 핀들을 불러오는 함수 추가해야 하고 모달 컴포넌트에 핀 데이터 내려줘야 한다.
+                //근처 핀들을 불러옵니다.
+                LoadBoard(
+                    type,
+                    pinData[i].latitude,
+                    pinData[i].longitude,
+                    keyword
+                );
+                //모달을 켜줍니다.
                 showModal();
             });
 
             kakao.maps.event.addListener(imageMarker, "click", function () {
-                //근처 핀들을 불러오는 함수 추가해야 하고 모달 컴포넌트에 핀 데이터 내려줘야 한다.
+                //근처 핀들을 불러옵니다.
+                LoadBoard(
+                    type,
+                    pinData[i].latitude,
+                    pinData[i].longitude,
+                    keyword
+                );
+                console.log(boardData);
+                //모달을 켜줍니다.
                 showModal();
             });
 
@@ -151,8 +186,7 @@ function Map() {
             });
         }
         // 마커가 생성될때 바로 화면상에 새로생성된 마커를 보여주기 위해 배열안에 props를 넣어놨습니다.
-    }, [pinData]);
-
+    }, [pinData, type, keyword, boardData]);
     return (
         <MapWrap>
             <div
@@ -171,7 +205,7 @@ function Map() {
             ></FilterInputCategory>
             {/* 모달창을 끌 수 있게 하기 위해 props로 setModalOpen을 내려줍니다. */}
             {modalOpen && (
-                <Modal visible={modalOpen} aroundPins={aroundPins}></Modal>
+                <Modal visible={modalOpen} boardData={boardData}></Modal>
             )}
         </MapWrap>
     );
