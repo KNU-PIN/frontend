@@ -1,4 +1,5 @@
 import React,{useEffect, useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from "../components/layout/Layout";
 import { THEME } from "../constants/colors";
 import styled,{keyframes} from "styled-components";
@@ -8,13 +9,31 @@ import {MdOutlineCancel} from "react-icons/md"
 import PostSlider from '../components/atoms/PostSlider';
 import axios from "axios";
 
+const Div=styled.div`
+  width:100vw;
+  height: 100vh;
+  padding-top:10%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
+const Back = styled.button`
+  background: none;
+  border: none;
+  font-size:2rem;
+  padding: 0;
+  position: absolute;
+  top:3%;
+  right:7%;
+`;
 
 const PostTitleButtonsDiv=styled.div`
   width:90%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top:20px;
+  //margin-top:20px;
 `
 const PostTitle=styled.h1`
 
@@ -59,7 +78,7 @@ const CommentWriter=styled.div`
 const InputCommentDiv=styled.div`
   width:90%;
   position: fixed;
-  bottom:6rem;
+  bottom:1rem;
   background-color: #F5F6FC;
   border: none;
   border-radius: 10px;
@@ -170,9 +189,10 @@ function PostDetail() {
       able:true
     }
   )
+  const navigate=useNavigate();
   useEffect(()=>{
     //게시글 정보 
-    const response = axios.get('/api/v1/pinboard/11')
+    const response = axios.get('/api/v1/pinboard/1')
     .then(res=>res.data)
     .then(data=>{
       setPostData({...postData, 
@@ -188,7 +208,7 @@ function PostDetail() {
     setHeart({...heart, count:data.like})
   })
   //게시글 댓글 정보
-  const comments=axios.get('/api/v1/comment/2')
+  const comments=axios.get('/api/v1/comment/1')
   .then(res=>res.data)
   .then(data=>{
     setCommentsData(data.comments)
@@ -199,7 +219,7 @@ function PostDetail() {
   const onClickHeart=()=>{
     try{
       const response=axios.post('/api/v1/pinboard/ddabong',JSON.stringify({
-        pinId:11
+        pinId:1
       }),
       {
         headers:{
@@ -212,18 +232,7 @@ function PostDetail() {
     }catch(e){
       console.log(e)
     }
-     
-    // setHeart({...heart, count:data.data, able:false})
-    //  setHeart((prevState)=>{
-    //   return{
-    //     ...prevState,
-    //   count:heart.count+1,
-    //   able:!heart.able
-    //   }
-    //  })
-    
   }
-  
   
   const onClickDeleteModal=()=>{
      setDeleteModal(true)
@@ -231,15 +240,36 @@ function PostDetail() {
   const onClickCancelDelete=()=>{
     setDeleteModal(false)
   }
+  const onClickCommentsSubmit=()=>{
+    try{
+      const response=axios.post('/api/v1/comment/create',JSON.stringify({
+        pinId:1,
+        contents:inputComment
+      }),
+      {
+        headers:{
+        "Content-Type":`application/json`,
+        "Conte":"applic",
+        "X-FORWARDED-FOR":"1.1.1.2"
+      }
+    }).then(res=>console.log(res))
+    }catch(e){
+      console.log(e)
+    }
+  }
+
     return (
-      <Layout title="게시글 상세보기" hasBackButton>
+      <Div>
+        <Back onClick={()=>navigate(-1)}>
+            X
+          </Back>
         {deleteModal?<DeleteDiv visible={deleteModal}>
           <PasswordTitle>비밀번호</PasswordTitle>
           <PasswordInput type="password" placeholder='게시글을 삭제하려면 비밀번호를 입력하세요.'></PasswordInput>
           <PasswordButton>삭제</PasswordButton>
           <CancelButton onClick={onClickCancelDelete}><MdOutlineCancel/></CancelButton>
         </DeleteDiv>:<></>}
-        <PostSlider images={images}></PostSlider>
+        <PostSlider images={postData?.images}></PostSlider>
         <PostTitleButtonsDiv>
           <PostTitle>{postData?.title}</PostTitle>
           <PostButtonsDiv>
@@ -262,36 +292,14 @@ function PostDetail() {
         <InputCommentDiv>
           <InputCommentWriter>익명{commentsData?.length}</InputCommentWriter>
           <InputComment placeholder='댓글을 입력하세요.' onChange={(e)=>{setInputComment(e.target.value)}}></InputComment>
-          <SendIconWrap>
+          <SendIconWrap onClick={onClickCommentsSubmit}>
             <RiSendPlane2Fill/>
           </SendIconWrap>
         </InputCommentDiv>
-      </Layout> 
+      </Div> 
     );
 }
 
-const images=[
-  {
-    id:1,
-    src:"/img/postDetail_example.png"
-  },
-  {
-    id:2,
-    src:"/img/postDetail_example.png"
-  },
-  {
-    id:3,
-    src:"/img/postDetail_example.png"
-  },
-  {
-    id:4,
-    src:"/img/postDetail_example.png"
-  },
-  {
-    id:5,
-    src:"/img/postDetail_example.png"
-  },
-]
-
+const images=["/img/postDetail_example.png","/img/postDetail_example.png","/img/postDetail_example.png"]
 
 export default PostDetail;

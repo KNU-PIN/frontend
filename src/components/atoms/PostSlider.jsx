@@ -11,6 +11,7 @@ const Slide = styled.img`
 
 const SliderDiv=styled.div`
     width:90%;
+    margin-top: 5%;
 `
 
 function PostSlider({images}) {
@@ -23,8 +24,8 @@ function PostSlider({images}) {
     return (
         <SliderDiv>
         <Slider {...settings}>
-            {images.map((img)=>{return(
-                <Slide key={img.id} src={process.env.PUBLIC_URL+img.src} alt={img.id}/>
+            {images.map((img,index)=>{return(
+                <Slide key={index} src={process.env.PUBLIC_URL+img} alt={index}/>
             )})}
 		</Slider>
         </SliderDiv>
