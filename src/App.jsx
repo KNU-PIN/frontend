@@ -1,4 +1,5 @@
 import { Routes, Route, useNavigate, Outlet } from "react-router-dom";
+
 import Pinboard from "./pages/Pinboard";
 import Err from "./pages/Err";
 import PinList from "./pages/PinList";
