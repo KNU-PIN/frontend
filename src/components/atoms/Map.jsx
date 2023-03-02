@@ -192,8 +192,12 @@ function Map() {
                 id="map"
                 style={{
                     width: "100%",
-                    height: "600px",
-                    position: "relative",
+                    height: "100%",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    margin: 0,
+                    padding: 0,
                     overflow: "hidden",
                 }}
             ></div>
@@ -212,15 +216,15 @@ function Map() {
 
 const MapWrap = styled.div`
     //카테고리 버튼들의 absolute 정렬을 위해 realtive 필요함.
-    position: relative;
+    /* position: relative; */
 
     //자식 요소 가운데 정렬
     display: flex;
     justify-content: center;
 
     overflow: hidden;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
 `;
 
 export default Map;

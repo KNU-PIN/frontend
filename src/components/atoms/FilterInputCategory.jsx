@@ -57,7 +57,7 @@ const InputDiv = styled.div`
     border-radius: 2em;
     background-color: white;
     width: 50%;
-    height: 5%;
+    height: 2em;
     //지도 위에 보이기 위한 설정입니다.
     z-index: 1;
     //지도 위에 고정하기 위한 설정입니다.
