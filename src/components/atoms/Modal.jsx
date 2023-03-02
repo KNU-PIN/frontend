@@ -70,7 +70,7 @@ const Li = styled.div`
     display: flex;
 
     //이미지(자식)에만 height를 주고 여기는 주지말자.
-    height: 10%;
+    height: 100px;
     /* align-items: center; */
     padding: 10px 10px 20px 10px;
 `;
@@ -128,7 +128,7 @@ function Item({ pin }) {
             {/* 나머지 div */}
             <ContentDiv>
                 <Title>{pin.title}</Title>
-                <Content>{formatData(pin.content)}</Content>
+                <Content>{formatData(pin.contents)}</Content>
                 <Other>
                     <FirstDiv>
                         {/* 좋아요 개수 */}
@@ -143,22 +143,24 @@ function Item({ pin }) {
                         </CommentDiv>
                     </FirstDiv>
                     {/* 게시물 생성 날짜 */}
-                    <CreateDateDiv>{pin.CreateDate}</CreateDateDiv>
+                    <CreateDateDiv>{pin.createdAt}</CreateDateDiv>
                 </Other>
             </ContentDiv>
         </>
     );
 }
 
-export default function Modal({ setModalOpen, aroundPins }) {
+export default function Modal({ setModalOpen, boardData }) {
     //모달창 끄기
     // const closeModal = () => {
     //     setModalOpen(false);
     // };
 
+    console.log(boardData);
+
     //좋아요 순, 댓글 순, 최신 순
     const [order, setOrder] = useState("likeCnt");
-    const sortedAroundPins = aroundPins.sort((a, b) => b[order] - a[order]);
+    const sortedBoardDatas = boardData.sort((a, b) => b[order] - a[order]);
 
     const handleSelect = (e) => {
         console.log(e.target.value);
@@ -176,7 +178,7 @@ export default function Modal({ setModalOpen, aroundPins }) {
                 </Select>
             </Header>
             <Ul>
-                {sortedAroundPins.map((pin) => {
+                {sortedBoardDatas.map((pin) => {
                     return (
                         <Li style={{ listStyle: "none" }}>
                             <Item pin={pin} />
