@@ -1,9 +1,6 @@
 import { React, useRef } from "react";
 import styled from "styled-components";
-import { useState, useEffect } from "react";
 import { BiSearch } from "react-icons/bi";
-import pinData from "../../pinData.json";
-import axios from "axios";
 
 export default function FilterInputCategory({ setType, setKeyword }) {
     const inputTag = useRef();

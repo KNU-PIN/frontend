@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { useEffect } from "react";
 import { useState } from "react";
 import Modal from "./Modal";
-import aroundPins from "../../mockData.json";
 import FilterInputCategory from "./FilterInputCategory";
 import "./Image.css";
 import { getBoard, getPinData } from "../../apis/apis";
