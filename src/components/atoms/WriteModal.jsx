@@ -3,10 +3,10 @@ import Layout from "../layout/Layout";
 import styled, { keyframes } from "styled-components";
 import { THEME } from "../../constants/colors";
 import axios from "axios";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, memo } from "react";
 import Img from "./Img";
 
-export default function WriteModal() {
+export default function WriteModal(props) {
   const [title, setTitle] = useState();
   const [contents, setContents] = useState();
   const [pw, setPw] = useState();
@@ -57,6 +57,7 @@ export default function WriteModal() {
     }
   };
 
+  const navigate = useNavigate();
   return (
     <>
       <Container>
@@ -64,22 +65,40 @@ export default function WriteModal() {
           <PinTitle>
             PIN 선택&nbsp;
             <PinImg src={"https://cdn-icons-png.flaticon.com/512/1201/1201684.png"}></PinImg>
-            <PinCancel>게시글 작성 취소 X</PinCancel>
+            <PinCancel onClick={() => navigate(-1)}>게시글 작성 취소 X</PinCancel>
           </PinTitle>
         </Header>
         <FormWrapper>
           <Category>
-            <FreeButton value={"free"} onChange={(e) => setType(e.target.value)}>
+            <FreeButton
+              value={type}
+              onClick={(e) => {
+                e.preventDefault();
+                setType("free");
+              }}
+            >
               자유
             </FreeButton>
-            <WantedButton value={"gathering"} onChange={(e) => setType(e.target.value)}>
+            <WantedButton
+              value={type}
+              onClick={(e) => {
+                e.preventDefault();
+                setType("gathering");
+              }}
+            >
               구인구직
             </WantedButton>
-            <MarketButton value={"buy"} onChange={(e) => setType(e.target.value)}>
+            <MarketButton
+              value={type}
+              onClick={(e) => {
+                e.preventDefault();
+                setType("buy");
+              }}
+            >
               장터
             </MarketButton>
           </Category>
-          <Wrapper className="img-preview">
+          <Wrapper>
             <ImgPreview id="img-preview" src={imgFile ? imgFile : process.env.PUBLIC_URL + "/img/CreatePin_sampleimg.png"}></ImgPreview>
             <UploadImage
               type="file"
@@ -93,15 +112,12 @@ export default function WriteModal() {
           <Wrapper>
             <Type>게시글 작성 ✒️</Type>
             <br />
-            <br />
             <StyledInput value={title} onChange={(e) => setTitle(e.target.value)} placeholder="제목을 입력하세요." />
-          </Wrapper>
-          <Wrapper>
+            <br />
             <StyledTextarea value={contents} onChange={(e) => setContents(e.target.value)} placeholder="내용을 입력하세요." />
           </Wrapper>
           <Wrapper>
             <Type>비번번호 🔒︎</Type>
-            <br />
             <StyledInput2 value={pw} onChange={(e) => setPw(e.target.value)} />
           </Wrapper>
           <Wrapper>
@@ -115,10 +131,13 @@ export default function WriteModal() {
   );
 }
 const PinCancel = styled.button`
+  display: inline-block;
+  margin: auto 0 0 auto;
   font-size: 1em;
   border: none;
   background-color: white;
   width: 10em;
+  text-align: right;
 `;
 const PinImg = styled.img`
   width: 1em;
@@ -127,10 +146,13 @@ const PinImg = styled.img`
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  margin-top: 2REM;
   width: 100%;
 `;
 const PinTitle = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
   font-size: 1em;
   margin-left: 1.5em;
   margin-bottom: 1em;
@@ -145,20 +167,10 @@ const modalSlideUp = keyframes`
     transform: none;
   }
 `;
-const modalSlideDown = keyframes`
-  0% {
-    opacity: 1;
-    transform: none;
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(200px);
-  }
-`;
 const Container = styled.div`
-  border-radius: 4rem 4rem 0 0;
+  border-radius: 1rem 1rem 0 0;
   width: 100%;
-  height: 50%;
+  height: 100%;
 
   background-color: white;
 
@@ -170,7 +182,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  animation: ${modalSlideUp} 2s ease-out;
+  animation: ${modalSlideUp} 1s ease-out;
 `;
 const FreeButton = styled.button`
   color: white;
@@ -220,15 +232,15 @@ const MarketButton = styled.button`
 `;
 const Category = styled.div`
   display: flex;
-
+  margin-top: 0.5rem;
   //자식 요소 가운데 정렬을 위해 가로 100을 주고 justify-content설정 해줍니다.
   //justify-conetnet에는 space-envenly, space-around, space-between등의 설정도 있습니다.
   width: 100%;
   justify-content: center;
 `;
 const ImgPreview = styled.img`
-  width: 60%;
-  height: 60%;
+  width: 80%;
+  height: 80%;
   position: relative;
   border: 2px solid ${THEME.black400};
   border-radius: 0.5em;
@@ -240,7 +252,7 @@ const ImgPreview = styled.img`
 const UploadImage = styled.input`
   position: relative;
   display: flex;
-  margin: 1rem auto;
+  margin: 0.5rem auto;
   width: 40%;
   justify-content: center;
   align-items: center;
@@ -251,13 +263,11 @@ const FormWrapper = styled.form`
   margin: auto;
   flex-direction: column;
   background-color: white;
-  gap: 1.1rem;
-  border-radius: 10px;
+  gap: 0.5rem;
 `;
 const Type = styled.span`
   font-family: "GangwonEduPowerExtraBoldA";
   font-size: 1rem;
-  margin-bottom: -0.5rem;
   margin-left: 1em;
   text-align: left;
 `;
@@ -302,7 +312,7 @@ const StyledInput2 = styled.input`
 `;
 const StyledButton = styled.button`
   font-size: 1.2rem;
-  line-height: 1.5rem;
+  line-height: 2rem;
   background-color: #7a84db;
   border: 2px solid #7a84db;
   color: white;

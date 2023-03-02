@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import WriteModal from "./WriteModal";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, memo } from "react";
 
-export default function WriteButton() {
+export default memo(function WriteButton() {
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -12,17 +12,18 @@ export default function WriteButton() {
   }
   return (
     <>
-      <StyledButton type="button"
+      <StyledButton
+        type="button"
         onClick={() => {
           showModal();
         }}
       >
         <Img src={process.env.PUBLIC_URL + "/img/WriteButton.png"}></Img>
       </StyledButton>
-      <StyledDiv>{modalOpen && <WriteModal setModalOpen={setModalOpen}></WriteModal>}</StyledDiv>
+      <StyledDiv>{modalOpen && <WriteModal></WriteModal>}</StyledDiv>
     </>
   );
-}
+});
 const Img = styled.img`
   width: 60px;
   height: 60px;
@@ -32,10 +33,10 @@ const StyledDiv = styled.div`
   justify-content: center;
 `;
 const StyledButton = styled.button`
-  right: 20%;
-  bottom:2rem;
-  position:fixed;
+  right: 10%;
+  bottom: 2rem;
+  position: fixed;
   border: none;
   cursor: pointer;
-  background-color: white;
+  background-color: transparent;
 `;
