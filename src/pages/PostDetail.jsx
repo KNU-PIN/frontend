@@ -1,6 +1,5 @@
 import React,{useEffect, useState} from 'react';
-import { useNavigate } from 'react-router-dom';
-import Layout from "../components/layout/Layout";
+import { useNavigate, useParams} from 'react-router-dom';
 import { THEME } from "../constants/colors";
 import styled,{keyframes} from "styled-components";
 import {BsSuitHeart, BsSuitHeartFill} from "react-icons/bs"
@@ -92,6 +91,7 @@ const InputComment=styled.input`
   border: none;
   background-color: transparent;
   font-size: 1.2rem;
+  width: 80%;
 `
 
 const InputCommentWriter=styled.span`
@@ -180,19 +180,22 @@ function PostDetail() {
     type:"",
     images:[],
     createdAt:"",
-    like:0
+    like:0,
+    isliked:false
   })
   const [commentsData, setCommentsData]=useState([])
   const [heart,setHeart]=useState(
     {
       count:0,
-      able:true
+      isliked:false
     }
   )
   const navigate=useNavigate();
+  const {pinId}=useParams();
+
   useEffect(()=>{
     //게시글 정보 
-    const response = axios.get('/api/v1/pinboard/1')
+    axios.get(`/api/v1/pinboard/${pinId}`)
     .then(res=>res.data)
     .then(data=>{
       setPostData({...postData, 
@@ -203,37 +206,36 @@ function PostDetail() {
       type:data.type,
       images:data.images,
       createdAt:data.createdAt,
-      like:data.like
+      like:data.like,
+      isliked:data.isliked
     })
-    setHeart({...heart, count:data.like})
+    setHeart({...heart, count:data.like, isliked:data.isliked})
   })
+  
   //게시글 댓글 정보
-  const comments=axios.get('/api/v1/comment/1')
+  axios.get(`/api/v1/comment/${pinId}`)
   .then(res=>res.data)
   .then(data=>{
     setCommentsData(data.comments)
   })
-  
-  },[])
+  },[inputComment])
   
   const onClickHeart=()=>{
     try{
-      const response=axios.post('/api/v1/pinboard/ddabong',JSON.stringify({
-        pinId:1
+      axios.post('/api/v1/pinboard/ddabong',JSON.stringify({
+        pinId:pinId
       }),
       {
         headers:{
         "Content-Type":`application/json`,
         "Conte":"applic",
-        "X-FORWARDED-FOR":"1.1.1.2"
       }
     }).then(res=>res.data)
-    .then(data=>setHeart({...heart, count:data, able:false}))
+    .then(data=>setHeart({...heart, count:data, isliked:true}))
     }catch(e){
       console.log(e)
     }
   }
-  
   const onClickDeleteModal=()=>{
      setDeleteModal(true)
   }
@@ -241,18 +243,23 @@ function PostDetail() {
     setDeleteModal(false)
   }
   const onClickCommentsSubmit=()=>{
+    if (inputComment===""){
+      alert("내용을 입력해주세요.");
+      return;
+    }
+
     try{
-      const response=axios.post('/api/v1/comment/create',JSON.stringify({
-        pinId:1,
+      axios.post('/api/v1/comment/create',JSON.stringify({
+        pinId:pinId,
         contents:inputComment
       }),
       {
         headers:{
         "Content-Type":`application/json`,
         "Conte":"applic",
-        "X-FORWARDED-FOR":"1.1.1.2"
       }
     }).then(res=>console.log(res))
+    .then(setInputComment(''))
     }catch(e){
       console.log(e)
     }
@@ -274,7 +281,7 @@ function PostDetail() {
           <PostTitle>{postData?.title}</PostTitle>
           <PostButtonsDiv>
             <PostButtonHeart>
-              {heart?.able?<BsSuitHeart onClick={onClickHeart}/>:<BsSuitHeartFill/>}
+              {heart?.isliked?<BsSuitHeartFill/>:<BsSuitHeart onClick={onClickHeart}/>}
             {heart?.count}
             </PostButtonHeart>
               <Buttons>신고</Buttons>
@@ -291,7 +298,7 @@ function PostDetail() {
         </CommentsDiv>
         <InputCommentDiv>
           <InputCommentWriter>익명{commentsData?.length}</InputCommentWriter>
-          <InputComment placeholder='댓글을 입력하세요.' onChange={(e)=>{setInputComment(e.target.value)}}></InputComment>
+          <InputComment placeholder='댓글을 입력하세요.' value={inputComment} onChange={(e)=>{setInputComment(e.target.value)}}></InputComment>
           <SendIconWrap onClick={onClickCommentsSubmit}>
             <RiSendPlane2Fill/>
           </SendIconWrap>
@@ -300,6 +307,5 @@ function PostDetail() {
     );
 }
 
-const images=["/img/postDetail_example.png","/img/postDetail_example.png","/img/postDetail_example.png"]
 
 export default PostDetail;

@@ -7,6 +7,8 @@ import 'slick-carousel/slick/slick-theme.css';
 const Slide = styled.img`
     border-radius: 15%;
     width:100%;
+    
+    object-fit: cover;
 `
 
 const SliderDiv=styled.div`
@@ -24,8 +26,8 @@ function PostSlider({images}) {
     return (
         <SliderDiv>
         <Slider {...settings}>
-            {images.map((img,index)=>{return(
-                <Slide key={index} src={process.env.PUBLIC_URL+img} alt={index}/>
+            {images.map((img)=>{return(
+                <Slide key={img.sequence} src={img.pictureSrc} alt={img.sequence}/>
             )})}
 		</Slider>
         </SliderDiv>

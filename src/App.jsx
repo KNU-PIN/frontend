@@ -14,7 +14,7 @@ function App() {
                 {/* <Route path="/Pinboard" element={<Pinboard />} /> */}
                 <Route path="/PinList" element={<PinList />} />
                 <Route path="/CreatePin" element={<CreatePin />} />
-                <Route path="/PostDetail" element={<PostDetail />}></Route>
+                <Route path="/PostDetail/:pinId" element={<PostDetail />}></Route>
                 <Route path="*" element={<Err />} />
             </Routes>
         </div>
