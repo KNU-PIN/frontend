@@ -6,14 +6,13 @@ import 'slick-carousel/slick/slick-theme.css';
 
 const Slide = styled.img`
     border-radius: 15%;
-    width:100%;
-    
     object-fit: cover;
 `
 
 const SliderDiv=styled.div`
     width:90%;
     margin-top: 5%;
+    margin-bottom: 5%;
 `
 
 function PostSlider({images}) {
