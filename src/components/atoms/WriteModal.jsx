@@ -1,161 +1,195 @@
 import { useNavigate } from "react-router-dom";
-import Layout from "../layout/Layout";
 import styled, { keyframes } from "styled-components";
 import { THEME } from "../../constants/colors";
-import axios from "axios";
-import React, { useState, useRef, memo } from "react";
-import Img from "./Img";
+import React, { useState, useRef } from "react";
+import FileInput from "./FileInput";
+import { createPin } from "../../apis/apis";
+
+const INITIAL_VALUES = {
+    title: "",
+    contents: "",
+    pw: "",
+    type: "",
+    latitude: null,
+    longitude: null,
+    images: null,
+};
 
 export default function WriteModal(props) {
-  const [title, setTitle] = useState();
-  const [contents, setContents] = useState();
-  const [pw, setPw] = useState();
-  const [type, setType] = useState();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submittingError, setSubmittingError] = useState(null);
 
-  const [imgFile, setImgFile] = useState("");
+    const [values, setValues] = useState({
+        title: "",
+        contents: "",
+        pw: "",
+        type: "",
+        latitude: props.myLat,
+        longitude: props.myLng,
+        images: null,
+    });
 
-  const imgRef = useRef();
+    console.log(values.latitude, values.longitude);
 
-  const saveImgFile = () => {
-    const file = imgRef.current.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setImgFile(reader.result);
-    };
-  };
-
-  const onCreate = async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData();
-    let img = imgRef.current.files;
-    for (let i = 0; i < img.length; i++) {
-      formData.append("images[]", img[i]);
-    }
-
-    let variables = {
-      title: title,
-      contents: contents,
-      pw: pw,
-      type: type,
-      latitude: 35.9004,
-      longitude: 128.6,
+    const handleChange = (name, value) => {
+        setValues((prevValues) => ({
+            ...prevValues,
+            [name]: value,
+        }));
     };
 
-    for (let key in variables) {
-      formData.append(key, variables[key]);
-    }
+    const handleInputChange = (e) => {
+        e.preventDefault();
+        const { name, value } = e.target;
+        handleChange(name, value);
+    };
 
-    //Post 기능
-    try {
-      let response = await axios.post("/api/v1/pinboard/createpin", formData);
-      console.log(response.status);
-      console.log(response.data);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+    //완료 버튼 클릭 시 일어나는 Submit입니다.
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-  const navigate = useNavigate();
-  return (
-    <>
-      <Container>
-        <Header>
-          <PinTitle>
-            PIN 선택&nbsp;
-            <PinImg src={"https://cdn-icons-png.flaticon.com/512/1201/1201684.png"}></PinImg>
-            <PinCancel onClick={() => navigate(-1)}>게시글 작성 취소 X</PinCancel>
-          </PinTitle>
-        </Header>
-        <FormWrapper>
-          <Category>
-            <FreeButton
-              value={type}
-              onClick={(e) => {
-                e.preventDefault();
-                setType("free");
-              }}
-            >
-              자유
-            </FreeButton>
-            <WantedButton
-              value={type}
-              onClick={(e) => {
-                e.preventDefault();
-                setType("gathering");
-              }}
-            >
-              구인구직
-            </WantedButton>
-            <MarketButton
-              value={type}
-              onClick={(e) => {
-                e.preventDefault();
-                setType("buy");
-              }}
-            >
-              장터
-            </MarketButton>
-          </Category>
-          <Wrapper>
-            <ImgPreview id="img-preview" src={imgFile ? imgFile : process.env.PUBLIC_URL + "/img/CreatePin_sampleimg.png"}></ImgPreview>
-            <UploadImage
-              type="file"
-              multiple
-              accept="image/jpg,image/jpeg,image/jpe,image/png"
-              id="uploadImg"
-              onChange={saveImgFile}
-              ref={imgRef}
-            ></UploadImage>
-          </Wrapper>
-          <Wrapper>
-            <Type>게시글 작성 ✒️</Type>
-            <br />
-            <StyledInput value={title} onChange={(e) => setTitle(e.target.value)} placeholder="제목을 입력하세요." />
-            <br />
-            <StyledTextarea value={contents} onChange={(e) => setContents(e.target.value)} placeholder="내용을 입력하세요." />
-          </Wrapper>
-          <Wrapper>
-            <Type>비번번호 🔒︎</Type>
-            <StyledInput2 value={pw} onChange={(e) => setPw(e.target.value)} />
-          </Wrapper>
-          <Wrapper>
-            <br />
-            <StyledButton onClick={onCreate}>완료</StyledButton>
-          </Wrapper>
-        </FormWrapper>
-      </Container>
-      ;
-    </>
-  );
+        //폼데이터에 모든 데이터들을 담습니다.
+        const formData = new FormData();
+        for (let key in values) {
+            if (key === "images") continue;
+            formData.append(key, values[key]);
+        }
+        for (let i = 0; i < values.images.length; i++) {
+            formData.append("images[]", values.images[i]);
+        }
+        //전송합니다.
+        try {
+            setSubmittingError(null);
+            setIsSubmitting(true);
+            await createPin(formData);
+        } catch (error) {
+            setSubmittingError(error);
+            return;
+        } finally {
+            setIsSubmitting(false);
+            props.setLocation(false);
+            props.setIsWriteButtonClicked(false);
+        }
+        //모든 값을 초기화해줍니다.
+        setValues(INITIAL_VALUES);
+    };
+
+    //취소 핸들러입니다.
+    const handleCancel = () => {
+        props.setLocation(false);
+        props.setIsWriteButtonClicked(false);
+    };
+
+    // const navigate = useNavigate();
+    return (
+        <Container>
+            <Header>
+                <PinTitle>
+                    PIN 카테고리 선택&nbsp;
+                    <PinImg
+                        src={
+                            "https://cdn-icons-png.flaticon.com/512/1201/1201684.png"
+                        }
+                    ></PinImg>
+                    <PinCancel onClick={handleCancel}>
+                        게시글 작성 취소 X
+                    </PinCancel>
+                </PinTitle>
+            </Header>
+            <FormWrapper>
+                <Category>
+                    <FreeButton
+                        name="type"
+                        value="free"
+                        onClick={handleInputChange}
+                    >
+                        자유
+                    </FreeButton>
+                    <GatheringButton
+                        name="type"
+                        value="gathering"
+                        onClick={handleInputChange}
+                    >
+                        구인구직
+                    </GatheringButton>
+                    <BuyButton
+                        name="type"
+                        value="buy"
+                        onClick={handleInputChange}
+                    >
+                        장터
+                    </BuyButton>
+                </Category>
+                <FileInput
+                    name="images"
+                    value={values.images}
+                    onChange={handleChange}
+                    accept="image/jpg,image/jpeg,image/jpe,image/png"
+                ></FileInput>
+                <Wrapper>
+                    <Type>게시글 작성 ✒️</Type>
+                    <br />
+                    <StyledInput
+                        name="title"
+                        value={values.title}
+                        onChange={handleInputChange}
+                        placeholder="제목을 입력하세요."
+                    />
+                    <br />
+                    <StyledTextarea
+                        name="contents"
+                        value={values.contents}
+                        onChange={handleInputChange}
+                        placeholder="내용을 입력하세요."
+                    />
+                </Wrapper>
+                <Wrapper>
+                    <Type>비번번호 🔒︎</Type>
+                    <StyledInput2
+                        name="pw"
+                        value={values.pw}
+                        onChange={handleInputChange}
+                    />
+                </Wrapper>
+                <Wrapper>
+                    <br />
+                    <StyledButton onClick={handleSubmit} diabled={isSubmitting}>
+                        완료
+                    </StyledButton>
+                    {submittingError?.message && (
+                        <div>{submittingError.message}</div>
+                    )}
+                </Wrapper>
+            </FormWrapper>
+        </Container>
+    );
 }
 const PinCancel = styled.button`
-  display: inline-block;
-  margin: auto 0 0 auto;
-  font-size: 1em;
-  border: none;
-  background-color: white;
-  width: 10em;
-  text-align: right;
+    display: inline-block;
+    margin: auto 0 0 auto;
+    font-size: 1em;
+    border: none;
+    background-color: white;
+    width: 10em;
+    text-align: right;
 `;
 const PinImg = styled.img`
-  width: 1em;
-  height: 1em;
+    width: 1em;
+    height: 1em;
 `;
 const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 2REM;
-  width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    width: 90%;
 `;
 const PinTitle = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 90%;
-  font-size: 1em;
-  margin-left: 1.5em;
-  margin-bottom: 1em;
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    font-size: 1em;
+    margin-left: 1.5em;
+    margin-bottom: 1em;
 `;
 const modalSlideUp = keyframes`
   0% {
@@ -168,183 +202,170 @@ const modalSlideUp = keyframes`
   }
 `;
 const Container = styled.div`
-  border-radius: 1rem 1rem 0 0;
-  width: 100%;
-  height: 100%;
+    border-radius: 4em 4em 0 0;
+    width: 100%;
+    height: 100%;
 
-  background-color: white;
+    background-color: white;
 
-  z-index: 1;
-  overflow: scroll;
-  //아래에서
-  position: fixed;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  animation: ${modalSlideUp} 1s ease-out;
+    z-index: 1;
+    overflow: scroll;
+    //아래에서
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: ${modalSlideUp} 0.5s ease-out;
 `;
+
 const FreeButton = styled.button`
-  color: white;
-  width: 30%;
-  height: 3rem;
-  margin-right: 0.5em;
-  font-size: 20px;
-  border: none;
-  border-radius: 3em;
-  background-color: #ff6868;
-  letter-spacing: 0.5px;
-  &:focus {
-    outline: none;
-    border: 4px solid ${THEME.primary};
-  }
+    color: white;
+    width: 30%;
+    height: 3rem;
+    margin-right: 0.5em;
+    font-size: 20px;
+    border: none;
+    border-radius: 0.5em;
+    background-color: #ff6868;
+    letter-spacing: 0.5px;
+    &:focus {
+        outline: none;
+        border: 4px solid ${THEME.primary};
+    }
 `;
 
-const WantedButton = styled.button`
-  color: white;
-  width: 30%;
-  height: 3rem;
-  font-size: 20px;
-  border: none;
-  border-radius: 3em;
-  background-color: #ffdb5b;
-  letter-spacing: 0.5px;
-  &:focus {
-    outline: none;
-    border: 4px solid ${THEME.primary};
-  }
+const GatheringButton = styled.button`
+    color: white;
+    width: 30%;
+    height: 3rem;
+    font-size: 20px;
+    border: none;
+    border-radius: 0.5em;
+    background-color: #ffdb5b;
+    letter-spacing: 0.5px;
+    &:focus {
+        outline: none;
+        border: 4px solid ${THEME.primary};
+    }
 `;
 
-const MarketButton = styled.button`
-  color: white;
-  width: 30%;
-  height: 3rem;
-  margin-left: 0.5em;
-  font-size: 20px;
-  border: none;
-  border-radius: 3em;
-  background-color: #6ee36e;
-  letter-spacing: 0.5px;
-  &:focus {
-    outline: none;
-    border: 4px solid ${THEME.primary};
-  }
+const BuyButton = styled.button`
+    color: white;
+    width: 30%;
+    height: 3rem;
+    margin-left: 0.5em;
+    font-size: 20px;
+    border: none;
+    border-radius: 0.5em;
+    background-color: #6ee36e;
+    letter-spacing: 0.5px;
+    &:focus {
+        outline: none;
+        border: 4px solid ${THEME.primary};
+    }
 `;
 const Category = styled.div`
-  display: flex;
-  margin-top: 0.5rem;
-  //자식 요소 가운데 정렬을 위해 가로 100을 주고 justify-content설정 해줍니다.
-  //justify-conetnet에는 space-envenly, space-around, space-between등의 설정도 있습니다.
-  width: 100%;
-  justify-content: center;
-`;
-const ImgPreview = styled.img`
-  width: 80%;
-  height: 80%;
-  position: relative;
-  border: 2px solid ${THEME.black400};
-  border-radius: 0.5em;
-  box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
-  display: flex;
-  margin: auto;
+    display: flex;
+    //자식 요소 가운데 정렬을 위해 가로 100을 주고 justify-content설정 해줍니다.
+    //justify-conetnet에는 space-envenly, space-around, space-between등의 설정도 있습니다.
+    margin-top: 2em;
+    width: 100%;
+    justify-content: center;
 `;
 
-const UploadImage = styled.input`
-  position: relative;
-  display: flex;
-  margin: 0.5rem auto;
-  width: 40%;
-  justify-content: center;
-  align-items: center;
-`;
-
-const FormWrapper = styled.form`
-  display: flex;
-  margin: auto;
-  flex-direction: column;
-  background-color: white;
-  gap: 0.5rem;
+const FormWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    width: 90%;
+    /* margin: auto; */
+    flex-direction: column;
+    background-color: white;
+    gap: 0.5rem;
 `;
 const Type = styled.span`
-  font-family: "GangwonEduPowerExtraBoldA";
-  font-size: 1rem;
-  margin-left: 1em;
-  text-align: left;
+    font-family: "GangwonEduPowerExtraBoldA";
+    font-size: 1rem;
+    margin-left: 1em;
+    text-align: left;
 `;
 const Wrapper = styled.div`
-  padding: 0.5rem;
+    padding: 0.5rem;
+    width: 100%;
 `;
 const StyledInput = styled.input`
-  font-size: 1rem;
-  line-height: 2rem;
-  color: black;
-  text-align: left;
-  border: 2px solid ${THEME.black400};
-  border-radius: 0.5em;
-  padding: 0.5rem;
-  width: 90%;
-  transition: 0.5s;
-  ::placeholder {
+    font-size: 1rem;
+    line-height: 2rem;
     color: black;
     text-align: left;
-  }
-  &:focus {
-    outline: none;
-    border: 2px solid ${THEME.primary};
-  }
-  display: flex;
-  margin: auto;
-  box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+    border: 2px solid ${THEME.black400};
+    border-radius: 0.5em;
+    padding: 0.5rem;
+    width: 90%;
+    transition: 0.5s;
+    ::placeholder {
+        color: black;
+        text-align: left;
+    }
+    &:focus {
+        outline: none;
+        border: 2px solid ${THEME.primary};
+    }
+    display: flex;
+    margin: auto;
+    box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
 `;
 const StyledInput2 = styled.input`
-  font-size: 1rem;
-  line-height: 1rem;
-  color: black;
-  background-color: ${THEME.black400};
-  text-align: left;
-  border: 2px solid ${THEME.black400};
-  border-radius: 0.5em;
-  padding: 0.5rem;
-  width: 90%;
-  display: flex;
-  margin: auto;
-  box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+    font-size: 1rem;
+    line-height: 1rem;
+    color: black;
+    background-color: ${THEME.black400};
+    text-align: left;
+    border: 2px solid ${THEME.black400};
+    border-radius: 0.5em;
+    padding: 0.5rem;
+    width: 90%;
+    display: flex;
+    margin: auto;
+    box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
 `;
 const StyledButton = styled.button`
-  font-size: 1.2rem;
-  line-height: 2rem;
-  background-color: #7a84db;
-  border: 2px solid #7a84db;
-  color: white;
-  border-radius: 0.5em;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-  display: flex;
-  margin: auto;
-  width: 40%;
-  justify-content: center;
-  align-items: center;
+    font-size: 1.2rem;
+    line-height: 2rem;
+    background-color: #7a84db;
+    border: 2px solid #7a84db;
+    color: white;
+    border-radius: 0.5em;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: flex;
+    margin: auto;
+    width: 40%;
+    justify-content: center;
+    align-items: center;
 `;
 const StyledTextarea = styled.textarea`
-  font-size: 1rem;
-  line-height: 2rem;
-  color: black;
-  text-align: left;
-  border: 2px solid ${THEME.black400};
-  border-radius: 0.5em;
-  padding: 0.5rem;
-  width: 90%;
-  height: 9rem;
-  transition: 0.5s;
-  ::placeholder {
+    font-size: 1rem;
+    line-height: 2rem;
     color: black;
     text-align: left;
-  }
-  &:focus {
-    outline: none;
-    border: 2px solid ${THEME.primary};
-  }
-  display: flex;
-  margin: auto;
-  box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+    border: 2px solid ${THEME.black400};
+    border-radius: 0.5em;
+    padding: 0.5rem;
+    width: 90%;
+    height: 9rem;
+    transition: 0.5s;
+    ::placeholder {
+        color: black;
+        text-align: left;
+    }
+    &:focus {
+        outline: none;
+        border: 2px solid ${THEME.primary};
+    }
+    display: flex;
+    margin: auto;
+    box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
 `;

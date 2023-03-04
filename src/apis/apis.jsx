@@ -35,3 +35,10 @@ export async function getBoard(type, latitude, longitude, keyword) {
         console.log(e.response);
     }
 }
+
+export async function createPin(formData) {
+    //Post 기능
+    let response = await axios.post("/api/v1/pinboard/createpin", formData);
+    console.log(response.status);
+    console.log(response.data);
+}

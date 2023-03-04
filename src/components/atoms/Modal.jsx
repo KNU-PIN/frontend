@@ -23,17 +23,19 @@ const modalSlideDown = keyframes`
 `;
 
 const Container = styled.div`
-    border-radius: 4em;
+    border-top-left-radius: 4em;
+    border-top-right-radius: 4em;
     width: 100%;
     height: 60%;
 
     background-color: white;
 
-    z-index: 1;
+    z-index: 2;
     overflow: scroll;
     //아래에서
     position: fixed;
     bottom: 0;
+    left: 0;
     display: flex;
     flex-direction: column;
     align-items: center;

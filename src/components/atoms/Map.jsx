@@ -4,7 +4,9 @@ import { useState } from "react";
 import Modal from "./Modal";
 import FilterInputCategory from "./FilterInputCategory";
 import "./Image.css";
+import WriteButton from "./WriteButton";
 import { getBoard, getPinData } from "../../apis/apis";
+import WriteModal from "./WriteModal";
 
 const { kakao } = window;
 
@@ -14,6 +16,10 @@ function Map() {
     const [type, setType] = useState("free, gathering, buy");
     const [pinData, setPinData] = useState([]);
     const [boardData, setBoardData] = useState([]);
+    const [isWriteButotnClicked, setIsWriteButtonClicked] = useState(false);
+    const [location, setLocation] = useState(false);
+    const [myLat, setMyLat] = useState();
+    const [myLng, setMyLng] = useState();
 
     //초기 화면에 핀을 뿌려줍니다.
     const LoadPin = async (type, keyword) => {
@@ -33,22 +39,6 @@ function Map() {
         setBoardData(boardList);
     };
 
-    console.log(boardData);
-    console.log("check");
-
-    // useEffect(() => {
-
-    // }, [type, keyword]);
-
-    // // for (var prop in pinData) {
-    //     console.log(prop, pinData[prop]);
-    // }
-    //const [pinclicked, setPinClicked] = useState("false");
-
-    // const [is_write, setWrite] = useState(false);
-    // const normalMarker = useSelector((state) => state.marker.normal);
-    // const hotMarker = useSelector((state) => state.marker.hot);
-
     //모달 open
     function showModal() {
         setModalOpen(true);
@@ -57,18 +47,6 @@ function Map() {
     function closeModal() {
         setModalOpen(false);
     }
-
-    // function addKakaoLatLng(pinData) {
-    //     const pinDataLatlng = pinData.map((pin) => {
-    //         pin.latlng = new kakao.maps.LatLng(pin.latitude, pin.longitude);
-    //         return pin;
-    //     });
-    // }
-
-    //핀데이터를 맵에 표시하기 위해 위도, 경도를 가공합니다.
-    // if (pinData.length) {
-    //     addKakaoLatLng(pinData);
-    // }
 
     useEffect(() => {
         //지도 표시할 div
@@ -84,6 +62,34 @@ function Map() {
         var redImage = process.env.PUBLIC_URL + "img/red.png";
         var greenImage = process.env.PUBLIC_URL + "img/green.png";
         var yellowImage = process.env.PUBLIC_URL + "img/yellow.png";
+
+        //글 작성 버튼을 클릭하면 핀을 생성할 위치를 선택합니다.
+        function setPin() {
+            var marker = new kakao.maps.Marker({
+                // 지도 중심좌표에 마커를 생성합니다
+                position: map.getCenter(),
+            });
+            // 지도에 마커를 표시합니다
+            marker.setMap(map);
+
+            kakao.maps.event.addListener(map, "click", function (mouseEvent) {
+                // 클릭한 위도, 경도 정보를 가져옵니다
+                var latlng = mouseEvent.latLng;
+
+                // 마커 위치를 클릭한 위치로 옮깁니다
+                marker.setPosition(latlng);
+
+                setMyLat(latlng.getLat());
+                setMyLng(latlng.getLng());
+                setLocation(true);
+
+                console.log(myLat, myLng);
+            });
+        }
+
+        if (isWriteButotnClicked) {
+            setPin();
+        }
 
         //지도에 핀 표시
         for (let i = 0; i < pinData.length; i++) {
@@ -149,10 +155,6 @@ function Map() {
 
             imageMarker.setMap(map);
 
-            // const LoadPost = async (type, keyword, pinData[i].latitude,pinData[i].longitude) => {
-
-            // };
-
             //핀 이미지 클릭 하면 모달이 올라옵니다.
             kakao.maps.event.addListener(marker, "click", function () {
                 //근처 핀들을 불러옵니다.
@@ -184,8 +186,9 @@ function Map() {
                 closeModal();
             });
         }
+
         // 마커가 생성될때 바로 화면상에 새로생성된 마커를 보여주기 위해 배열안에 props를 넣어놨습니다.
-    }, [pinData, type, keyword, boardData]);
+    }, [pinData, type, keyword, boardData, isWriteButotnClicked, myLat, myLng]);
     return (
         <MapWrap>
             <div
@@ -209,6 +212,17 @@ function Map() {
             {/* 모달창을 끌 수 있게 하기 위해 props로 setModalOpen을 내려줍니다. */}
             {modalOpen && (
                 <Modal visible={modalOpen} boardData={boardData}></Modal>
+            )}
+            <WriteButton
+                setIsWriteButtonClicked={setIsWriteButtonClicked}
+            ></WriteButton>
+            {location && (
+                <WriteModal
+                    setLocation={setLocation}
+                    setIsWriteButtonClicked={setIsWriteButtonClicked}
+                    myLat={myLat}
+                    myLng={myLng}
+                ></WriteModal>
             )}
         </MapWrap>
     );
