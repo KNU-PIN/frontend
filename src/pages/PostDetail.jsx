@@ -1,6 +1,5 @@
 import React,{useEffect, useState} from 'react';
-import { useNavigate } from 'react-router-dom';
-import Layout from "../components/layout/Layout";
+import { useNavigate, useParams} from 'react-router-dom';
 import { THEME } from "../constants/colors";
 import styled,{keyframes} from "styled-components";
 import {BsSuitHeart, BsSuitHeartFill} from "react-icons/bs"
@@ -8,6 +7,161 @@ import {RiSendPlane2Fill} from "react-icons/ri"
 import {MdOutlineCancel} from "react-icons/md"
 import PostSlider from '../components/atoms/PostSlider';
 import axios from "axios";
+
+function PostDetail() {
+  const [inputComment,setInputComment]=useState('')
+  const [deleteModal, setDeleteModal]=useState(false)
+  const [password, setPassword]=useState('')
+  const [postData,setPostData]=useState({
+    latitude:"",
+    longitude:"",
+    title:"",
+    contents:"",
+    type:"",
+    images:[],
+    createdAt:"",
+    like:0,
+    isliked:false
+  })
+  const [commentsData, setCommentsData]=useState([])
+  const [heart,setHeart]=useState(
+    {
+      count:0,
+      isliked:false
+    }
+  )
+  const navigate=useNavigate();
+  const {pinId}=useParams();
+
+  useEffect(()=>{
+    //게시글 정보 
+    axios.get(`/api/v1/pinboard/${pinId}`)
+    .then(res=>res.data)
+    .then(data=>{
+      setPostData({...postData, 
+      latitude:data.latitude,
+      longitude:data.longitude,
+      title:data.title,
+      contents:data.contents,
+      type:data.type,
+      images:data.images,
+      createdAt:data.createdAt,
+      like:data.like,
+      isliked:data.isliked
+    })
+    setHeart({...heart, count:data.like, isliked:data.isliked})
+  })
+  
+  //게시글 댓글 정보
+  axios.get(`/api/v1/comment/${pinId}`)
+  .then(res=>res.data)
+  .then(data=>{
+    setCommentsData(data.comments)
+  })
+  },[inputComment])
+  
+  const onClickHeart=()=>{
+    try{
+      axios.post('/api/v1/pinboard/ddabong',JSON.stringify({
+        pinId:pinId
+      }),
+      {
+        headers:{
+        "Content-Type":`application/json`,
+        "Conte":"applic",
+      }
+    }).then(res=>res.data)
+    .then(data=>setHeart({...heart, count:data, isliked:true}))
+    }catch(e){
+      console.log(e)
+    }
+  }
+  const onClickDeleteModal=()=>{
+     setDeleteModal(true)
+  }
+  const onClickCancelDelete=()=>{
+    setDeleteModal(false)
+  }
+  const onClickDeletePost=()=>{
+    try{
+      axios.delete(`/api/v1/pinboard/${pinId}`,{
+        data:{
+          pw:password
+        }
+      }
+      ).then(alert('게시글이 삭제되었습니다.'))
+      .then(navigate(-1))
+    }catch(e){
+      console.log(e)
+    }
+  }
+  const onClickCommentsSubmit=()=>{
+    if (inputComment===""){
+      alert("내용을 입력해주세요.");
+      return;
+    }
+
+    try{
+      axios.post('/api/v1/comment/create',JSON.stringify({
+        pinId:pinId,
+        contents:inputComment
+      }),
+      {
+        headers:{
+        "Content-Type":`application/json`,
+        "Conte":"applic",
+      }
+    }).then(res=>console.log(res))
+    .then(setInputComment(''))
+    }catch(e){
+      console.log(e)
+    }
+  }
+
+    return (
+      <Div>
+        <Back onClick={()=>navigate(-1)}>
+            X
+          </Back>
+        {deleteModal?<DeleteDiv visible={deleteModal}>
+          <PasswordTitle>비밀번호</PasswordTitle>
+          <PasswordInput onChange={(e)=>setPassword(e.target.value)} type="password" placeholder='게시글을 삭제하려면 비밀번호를 입력하세요.'></PasswordInput>
+          <PasswordButton onClick={onClickDeletePost}>삭제</PasswordButton>
+          <CancelButton onClick={onClickCancelDelete}><MdOutlineCancel/></CancelButton>
+        </DeleteDiv>:<></>}
+        <PostSlider images={postData?.images}></PostSlider>
+        <PostTitleButtonsDiv>
+          <PostTitle>{postData?.title}</PostTitle>
+          <PostButtonsDiv>
+            <PostButtonHeart>
+              {heart?.isliked?<BsSuitHeartFill/>:<BsSuitHeart onClick={onClickHeart}/>}
+            {heart?.count}
+            </PostButtonHeart>
+              <Buttons>신고</Buttons>
+              <Buttons onClick={onClickDeleteModal}>글 삭제</Buttons>
+          </PostButtonsDiv>
+        </PostTitleButtonsDiv>
+        <PostContent>{postData?.contents}</PostContent>
+        <CommentsDiv>
+          {commentsData?.map((data,index)=>{
+            return(
+              <Comment key={index}><CommentWriter>{data.name}</CommentWriter>{data.contents}</Comment>
+            )
+          })}
+        </CommentsDiv>
+        <InputCommentDiv>
+          <InputCommentWriter>익명{commentsData?.length}</InputCommentWriter>
+          <InputComment placeholder='댓글을 입력하세요.' value={inputComment} onChange={(e)=>{setInputComment(e.target.value)}}></InputComment>
+          <SendIconWrap onClick={onClickCommentsSubmit}>
+            <RiSendPlane2Fill/>
+          </SendIconWrap>
+        </InputCommentDiv>
+      </Div> 
+    );
+}
+
+
+export default PostDetail;
 
 const Div=styled.div`
   width:100vw;
@@ -92,6 +246,7 @@ const InputComment=styled.input`
   border: none;
   background-color: transparent;
   font-size: 1.2rem;
+  width: 80%;
 `
 
 const InputCommentWriter=styled.span`
@@ -169,137 +324,3 @@ const CancelButton=styled.span`
   top:10%;
   right:3%;
 `
-function PostDetail() {
-  const [inputComment,setInputComment]=useState('')
-  const [deleteModal, setDeleteModal]=useState(false)
-  const [postData,setPostData]=useState({
-    latitude:"",
-    longitude:"",
-    title:"",
-    contents:"",
-    type:"",
-    images:[],
-    createdAt:"",
-    like:0
-  })
-  const [commentsData, setCommentsData]=useState([])
-  const [heart,setHeart]=useState(
-    {
-      count:0,
-      able:true
-    }
-  )
-  const navigate=useNavigate();
-  useEffect(()=>{
-    //게시글 정보 
-    const response = axios.get('/api/v1/pinboard/1')
-    .then(res=>res.data)
-    .then(data=>{
-      setPostData({...postData, 
-      latitude:data.latitude,
-      longitude:data.longitude,
-      title:data.title,
-      contents:data.contents,
-      type:data.type,
-      images:data.images,
-      createdAt:data.createdAt,
-      like:data.like
-    })
-    setHeart({...heart, count:data.like})
-  })
-  //게시글 댓글 정보
-  const comments=axios.get('/api/v1/comment/1')
-  .then(res=>res.data)
-  .then(data=>{
-    setCommentsData(data.comments)
-  })
-  
-  },[])
-  
-  const onClickHeart=()=>{
-    try{
-      const response=axios.post('/api/v1/pinboard/ddabong',JSON.stringify({
-        pinId:1
-      }),
-      {
-        headers:{
-        "Content-Type":`application/json`,
-        "Conte":"applic",
-        "X-FORWARDED-FOR":"1.1.1.2"
-      }
-    }).then(res=>res.data)
-    .then(data=>setHeart({...heart, count:data, able:false}))
-    }catch(e){
-      console.log(e)
-    }
-  }
-  
-  const onClickDeleteModal=()=>{
-     setDeleteModal(true)
-  }
-  const onClickCancelDelete=()=>{
-    setDeleteModal(false)
-  }
-  const onClickCommentsSubmit=()=>{
-    try{
-      const response=axios.post('/api/v1/comment/create',JSON.stringify({
-        pinId:1,
-        contents:inputComment
-      }),
-      {
-        headers:{
-        "Content-Type":`application/json`,
-        "Conte":"applic",
-        "X-FORWARDED-FOR":"1.1.1.2"
-      }
-    }).then(res=>console.log(res))
-    }catch(e){
-      console.log(e)
-    }
-  }
-
-    return (
-      <Div>
-        <Back onClick={()=>navigate(-1)}>
-            X
-          </Back>
-        {deleteModal?<DeleteDiv visible={deleteModal}>
-          <PasswordTitle>비밀번호</PasswordTitle>
-          <PasswordInput type="password" placeholder='게시글을 삭제하려면 비밀번호를 입력하세요.'></PasswordInput>
-          <PasswordButton>삭제</PasswordButton>
-          <CancelButton onClick={onClickCancelDelete}><MdOutlineCancel/></CancelButton>
-        </DeleteDiv>:<></>}
-        <PostSlider images={postData?.images}></PostSlider>
-        <PostTitleButtonsDiv>
-          <PostTitle>{postData?.title}</PostTitle>
-          <PostButtonsDiv>
-            <PostButtonHeart>
-              {heart?.able?<BsSuitHeart onClick={onClickHeart}/>:<BsSuitHeartFill/>}
-            {heart?.count}
-            </PostButtonHeart>
-              <Buttons>신고</Buttons>
-              <Buttons onClick={onClickDeleteModal}>글 삭제</Buttons>
-          </PostButtonsDiv>
-        </PostTitleButtonsDiv>
-        <PostContent>{postData?.contents}</PostContent>
-        <CommentsDiv>
-          {commentsData?.map((data,index)=>{
-            return(
-              <Comment key={index}><CommentWriter>{data.name}</CommentWriter>{data.contents}</Comment>
-            )
-          })}
-        </CommentsDiv>
-        <InputCommentDiv>
-          <InputCommentWriter>익명{commentsData?.length}</InputCommentWriter>
-          <InputComment placeholder='댓글을 입력하세요.' onChange={(e)=>{setInputComment(e.target.value)}}></InputComment>
-          <SendIconWrap onClick={onClickCommentsSubmit}>
-            <RiSendPlane2Fill/>
-          </SendIconWrap>
-        </InputCommentDiv>
-      </Div> 
-    );
-}
-
-const images=["/img/postDetail_example.png","/img/postDetail_example.png","/img/postDetail_example.png"]
-
-export default PostDetail;

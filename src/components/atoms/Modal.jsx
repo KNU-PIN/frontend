@@ -3,6 +3,7 @@ import { BiCommentDots } from "react-icons/bi";
 import { BsSuitHeart } from "react-icons/bs";
 import styled, { keyframes } from "styled-components";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const modalSlideUp = keyframes`
   0%{
@@ -112,6 +113,12 @@ const Other = styled.div`
 const FirstDiv = styled.div`
     display: flex;
 `;
+
+const ItemDiv=styled.div`
+    width:100%;
+    height: 100%;
+    display: flex;
+`
 const HeartDiv = styled.div``;
 const CommentDiv = styled.div``;
 const CreateDateDiv = styled.div``;
@@ -123,8 +130,9 @@ function formatData(value) {
 
 //pin_id,title,contents,like_cnt,comment_cnt,create_date,img_src}
 function Item({ pin }) {
+    const navigate = useNavigate();
     return (
-        <>
+        <ItemDiv onClick={()=>{navigate(`/PostDetail/${pin.pinId}`)}}>
             {/* 게시물 대표 이미지 */}
             <Image src={pin.imgSrc} alt={pin.title}></Image>
             {/* 나머지 div */}
@@ -148,7 +156,7 @@ function Item({ pin }) {
                     <CreateDateDiv>{pin.createdAt}</CreateDateDiv>
                 </Other>
             </ContentDiv>
-        </>
+        </ItemDiv>
     );
 }
 
