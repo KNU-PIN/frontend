@@ -159,6 +159,7 @@ export default function WriteModal(props) {
                     {submittingError?.message && (
                         <div>{submittingError.message}</div>
                     )}
+                    <br />
                 </Wrapper>
             </FormWrapper>
         </Container>
