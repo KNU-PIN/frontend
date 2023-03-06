@@ -288,11 +288,10 @@ const FormWrapper = styled.div`
 const Type = styled.span`
     font-family: "GangwonEduPowerExtraBoldA";
     font-size: 1rem;
-    margin-left: 1em;
+    margin-left: 5%;
     text-align: left;
 `;
 const Wrapper = styled.div`
-    padding: 0.5rem;
     width: 100%;
 `;
 const StyledInput = styled.input`
