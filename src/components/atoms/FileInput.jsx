@@ -61,8 +61,9 @@ function FileInput({ name, value, onChange }) {
 }
 const Div = styled.div`
     position: relative;
-    width: 400px;
-    height: 400px;
+    padding: 0.5rem;
+    height: 90%;
+    width: 90%;
     border-radius: 0.5em;
     background-color: #f6f6f6;
     border: 1px solid #dae7e3;
@@ -86,8 +87,8 @@ const Input = styled.input`
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
     height: 100%;
+    width: 100%;
     cursor: pointer;
 `;
 
