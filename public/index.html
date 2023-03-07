@@ -29,6 +29,37 @@
             src="//dapi.kakao.com/v2/maps/sdk.js?appkey=955d88b42845cb25144d37b92d0ff10f"
         ></script>
         <title>React App</title>
+        <style>
+            .customoverlay {
+                position: relative;
+                bottom: 85px;
+                border-radius: 6px;
+                border: 1px solid #ccc;
+                border-bottom: 2px solid #ddd;
+            }
+            .customoverlay:nth-of-type(n) {
+                border: 0;
+                box-shadow: 0px 1px 2px #888;
+            }
+            .customoverlay .title {
+                display: block;
+                text-align: center;
+                background: #fff;
+                padding: 10px 15px;
+                font-size: 14px;
+                font-weight: bold;
+            }
+            .customoverlay:after {
+                content: "";
+                position: absolute;
+                margin-left: -12px;
+                left: 50%;
+                bottom: -12px;
+                width: 22px;
+                height: 12px;
+                background: url("https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png");
+            }
+        </style>
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>

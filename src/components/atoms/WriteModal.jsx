@@ -1,7 +1,6 @@
-import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { THEME } from "../../constants/colors";
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import FileInput from "./FileInput";
 import { createPin } from "../../apis/apis";
 

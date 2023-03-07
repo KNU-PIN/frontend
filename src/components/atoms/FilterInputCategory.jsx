@@ -23,7 +23,7 @@ export default function FilterInputCategory({ setType, setKeyword }) {
     // 3. 둘다 걸자! 부모에서도 초기 데이터 받아오고, 자식에서도 핸들링되면 다시 받아오면 되는거 아니야?
 
     return (
-        <>
+        <FilterDiv>
             <InputDiv>
                 {/* 검색창 Input 컴포넌트 재활용을 위한 props 사용 */}
                 <Input
@@ -47,9 +47,18 @@ export default function FilterInputCategory({ setType, setKeyword }) {
                     장터
                 </BuyButton>
             </CategoryDiv>
-        </>
+        </FilterDiv>
     );
 }
+
+const FilterDiv = styled.div`
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+`;
 //inputLabel css입니다.
 const InputDiv = styled.div`
     //필요 없음.
@@ -74,6 +83,7 @@ const Input = styled.input`
     background-color: transparent;
     border: none;
     letter-spacing: 1px;
+    padding-left: 5%;
     box-sizing: border-box;
     &:focus {
         outline: none;
@@ -96,8 +106,8 @@ const CategoryDiv = styled.div`
 
     //자식 요소 가운데 정렬을 위해 가로 100을 주고 justify-content설정 해줍니다.
     //justify-conetnet에는 space-envenly, space-around, space-between등의 설정도 있습니다.
-    width: 100%;
-    justify-content: center;
+    width: 50%;
+    justify-content: space-between;
 
     z-index: 1;
     position: absolute;
@@ -107,10 +117,8 @@ const CategoryDiv = styled.div`
 //버튼 태그는 content 자동 중앙 정렬 해줍니다.
 const FreeButton = styled.button`
     color: black;
-    width: 75px;
+    width: 30%;
     height: 25px;
-
-    margin-right: 1em;
     font-size: 12px;
     border: none;
     border-radius: 5px;
@@ -120,7 +128,7 @@ const FreeButton = styled.button`
 
 const GatheringButton = styled.button`
     color: black;
-    width: 75px;
+    width: 30%;
     height: 25px;
     font-size: 12px;
     border: none;
@@ -131,9 +139,8 @@ const GatheringButton = styled.button`
 
 const BuyButton = styled.button`
     color: black;
-    width: 75px;
+    width: 30%;
     height: 25px;
-    margin-left: 1em;
     font-size: 12px;
     border: none;
     border-radius: 5px;

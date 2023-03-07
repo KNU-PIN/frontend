@@ -14,15 +14,6 @@ const modalSlideUp = keyframes`
   }
 `;
 
-const modalSlideDown = keyframes`
-  0%{
-    bottom:0;
-  }
-  100%{
-        bottom:-25%;
-  }
-`;
-
 const Container = styled.div`
     border-top-left-radius: 4em;
     border-top-right-radius: 4em;
@@ -114,11 +105,11 @@ const FirstDiv = styled.div`
     display: flex;
 `;
 
-const ItemDiv=styled.div`
-    width:100%;
+const ItemDiv = styled.div`
+    width: 100%;
     height: 100%;
     display: flex;
-`
+`;
 const HeartDiv = styled.div``;
 const CommentDiv = styled.div``;
 const CreateDateDiv = styled.div``;
@@ -132,7 +123,11 @@ function formatData(value) {
 function Item({ pin }) {
     const navigate = useNavigate();
     return (
-        <ItemDiv onClick={()=>{navigate(`/PostDetail/${pin.pinId}`)}}>
+        <ItemDiv
+            onClick={() => {
+                navigate(`/PostDetail/${pin.pinId}`);
+            }}
+        >
             {/* 게시물 대표 이미지 */}
             <Image src={pin.imgSrc} alt={pin.title}></Image>
             {/* 나머지 div */}
