@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = `/api/v1/pinboard`;
 
@@ -41,4 +42,73 @@ export async function createPin(formData) {
     let response = await axios.post("/api/v1/pinboard/createpin", formData);
     console.log(response.status);
     console.log(response.data);
+}
+
+//게시글 상세 페이지(postDetail.jsx)
+//게시글 내용 API
+export async function getBoardInfo(pinId){
+    try{
+        const response = await axios.get(`/api/v1/pinboard/${pinId}`);
+        return response.data;
+    }catch(e){
+        console.log(e)
+    }
+}
+
+//게시글 댓글 정보 API
+export async function getBoardComments(pinId){
+    try{
+        const response = await axios.get(`/api/v1/comment/${pinId}`);
+        return response.data;
+    }catch(e){
+        console.log(e)
+    }
+}
+
+//게시글 공감 클릭 API
+export async function postClickHeart(pinId){
+    try{
+        const response = await axios.post('/api/v1/pinboard/ddabong',JSON.stringify({
+            pinId:pinId
+          }),
+          {
+            headers:{
+            "Content-Type":`application/json`,
+            "Conte":"applic",
+          }
+        })
+        return response.data
+    }catch(e){
+        console.log(e)
+    }
+}
+
+
+export async function deletePost(pinId,password,navigate){
+    await axios.delete(`/api/v1/pinboard/${pinId}`,{
+        data:{
+          pw:password
+        }
+      })
+      .then(res => alert('게시글이 삭제되었습니다.'))
+      .then(res => navigate(-1))
+      .catch(e => alert('비밀번호가 틀립니다.'))
+}
+
+export async function postComments(pinId, inputComment){
+    try{
+        axios.post('/api/v1/comment/create',JSON.stringify({
+            pinId:pinId,
+            contents:inputComment
+          }),
+          {
+            headers:{
+            "Content-Type":`application/json`,
+            "Conte":"applic",
+          }
+        })
+    }catch(e){
+        console.log(e)
+    }
+   
 }
