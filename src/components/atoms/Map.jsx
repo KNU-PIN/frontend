@@ -82,8 +82,6 @@ function Map() {
                 setMyLat(latlng.getLat());
                 setMyLng(latlng.getLng());
                 setLocation(true);
-
-                console.log(myLat, myLng);
             });
         }
 

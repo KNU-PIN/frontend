@@ -29,8 +29,6 @@ export default function WriteModal(props) {
         images: null,
     });
 
-    console.log(values.latitude, values.longitude);
-
     const handleChange = (name, value) => {
         setValues((prevValues) => ({
             ...prevValues,
