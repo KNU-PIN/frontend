@@ -45,7 +45,7 @@ export async function createPin(formData) {
 }
 
 //게시글 상세 페이지(postDetail.jsx)
-//게시글 내용 API
+//게시글 내용을 불러오는 API입니다.
 export async function getBoardInfo(pinId){
     try{
         const response = await axios.get(`/api/v1/pinboard/${pinId}`);
@@ -55,7 +55,7 @@ export async function getBoardInfo(pinId){
     }
 }
 
-//게시글 댓글 정보 API
+//게시글 댓글 정보를 불러오는 API입니다.
 export async function getBoardComments(pinId){
     try{
         const response = await axios.get(`/api/v1/comment/${pinId}`);
@@ -65,7 +65,7 @@ export async function getBoardComments(pinId){
     }
 }
 
-//게시글 공감 클릭 API
+//게시글 공감을 누르는 API입니다.
 export async function postClickHeart(pinId){
     try{
         const response = await axios.post('/api/v1/pinboard/ddabong',JSON.stringify({
@@ -83,7 +83,7 @@ export async function postClickHeart(pinId){
     }
 }
 
-
+//게시글을 삭제하는 API입니다.
 export async function deletePost(pinId,password,navigate){
     await axios.delete(`/api/v1/pinboard/${pinId}`,{
         data:{
@@ -95,6 +95,7 @@ export async function deletePost(pinId,password,navigate){
       .catch(e => alert('비밀번호가 틀립니다.'))
 }
 
+//게시글 댓글다는 API입니다.
 export async function postComments(pinId, inputComment){
     try{
         axios.post('/api/v1/comment/create',JSON.stringify({
