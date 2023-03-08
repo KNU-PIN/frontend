@@ -47,10 +47,7 @@ function Map() {
         setModalOpen(false);
     }
 
-    console.log("outside");
-
     useEffect(() => {
-        console.log("inside");
         //지도 표시할 div
         const container = document.getElementById("map");
         const options = {
@@ -244,7 +241,6 @@ function Map() {
 const MapWrap = styled.div`
     //카테고리 버튼들의 absolute 정렬을 위해 realtive 필요함.
     /* position: relative; */
-
     overflow: hidden;
     width: 100vw;
     height: 100vh;
