@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { THEME } from "../constants/colors";
-import styled, { keyframes } from "styled-components";
-import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
-import { RiSendPlane2Fill } from "react-icons/ri";
-import { MdOutlineCancel } from "react-icons/md";
-import PostSlider from "../components/atoms/PostSlider";
-import axios from "axios";
+
+import styled,{keyframes} from "styled-components";
+import {BsSuitHeart, BsSuitHeartFill} from "react-icons/bs"
+import {RiSendPlane2Fill} from "react-icons/ri"
+import {MdOutlineCancel} from "react-icons/md"
+import PostSlider from '../components/atoms/PostSlider';
+import { getBoardInfo, getBoardComments, postClickHeart, deletePost, postComments} from '../apis/apis';
 
 function PostDetail() {
     const [inputComment, setInputComment] = useState("");
@@ -31,106 +32,59 @@ function PostDetail() {
     const navigate = useNavigate();
     const { pinId } = useParams();
 
-    useEffect(() => {
-        //게시글 정보
-        axios
-            .get(`/api/v1/pinboard/${pinId}`)
-            .then((res) => res.data)
-            .then((data) => {
-                setPostData({
-                    ...postData,
-                    latitude: data.latitude,
-                    longitude: data.longitude,
-                    title: data.title,
-                    contents: data.contents,
-                    type: data.type,
-                    images: data.images,
-                    createdAt: data.createdAt,
-                    like: data.like,
-                    isliked: data.isliked,
-                });
-                setHeart({ ...heart, count: data.like, isliked: data.isliked });
-            });
+  useEffect(()=>{
+    //게시글 정보 
+    getBoardInfo(pinId)
+    .then(data=>{
+      setPostData({...postData, 
+        latitude:data.latitude,
+        longitude:data.longitude,
+        title:data.title,
+        contents:data.contents,
+        type:data.type,
+        images:data.images,
+        createdAt:data.createdAt,
+        like:data.like,
+        isliked:data.isliked
+      });
+      setHeart({...heart, count:data.like, isliked:data.isliked})
+      ;}
+    );
+  //게시글 댓글 정보
+  getBoardComments(pinId)
+  .then(data=>{
+    setCommentsData(data.comments)
+  })
+  },[inputComment])
 
-        //게시글 댓글 정보
-        axios
-            .get(`/api/v1/comment/${pinId}`)
-            .then((res) => res.data)
-            .then((data) => {
-                setCommentsData(data.comments);
-            });
-    }, [inputComment]);
+  const onClickHeart=()=>{
+    postClickHeart(pinId)
+    .then(data=>setHeart({...heart, count:data, isliked:true}))
+  }
 
-    const onClickHeart = () => {
-        try {
-            axios
-                .post(
-                    "/api/v1/pinboard/ddabong",
-                    JSON.stringify({
-                        pinId: pinId,
-                    }),
-                    {
-                        headers: {
-                            "Content-Type": `application/json`,
-                            Conte: "applic",
-                        },
-                    }
-                )
-                .then((res) => res.data)
-                .then((data) =>
-                    setHeart({ ...heart, count: data, isliked: true })
-                );
-        } catch (e) {
-            console.log(e);
-        }
-    };
-    const onClickDeleteModal = () => {
-        setDeleteModal(true);
-    };
-    const onClickCancelDelete = () => {
-        setDeleteModal(false);
-    };
-    const onClickDeletePost = () => {
-        try {
-            axios
-                .delete(`/api/v1/pinboard/${pinId}`, {
-                    data: {
-                        pw: password,
-                    },
-                })
-                .then(alert("게시글이 삭제되었습니다."))
-                .then(navigate(-1));
-        } catch (e) {
-            console.log(e);
-        }
-    };
-    const onClickCommentsSubmit = () => {
-        if (inputComment === "") {
-            alert("내용을 입력해주세요.");
-            return;
-        }
+  const onClickDeleteModal=()=>{
+     setDeleteModal(true)
+  }
+  const onClickCancelDelete=()=>{
+    setDeleteModal(false)
+  }
+  const onClickDeletePost=()=>{
+      deletePost(pinId, password,navigate)
+    }
+  
+  const onClickCommentsSubmit=()=>{
+    if (inputComment===""){
+      alert("내용을 입력해주세요.");
+      return;
+    }
 
-        try {
-            axios
-                .post(
-                    "/api/v1/comment/create",
-                    JSON.stringify({
-                        pinId: pinId,
-                        contents: inputComment,
-                    }),
-                    {
-                        headers: {
-                            "Content-Type": `application/json`,
-                            Conte: "applic",
-                        },
-                    }
-                )
-                .then((res) => console.log(res))
-                .then(setInputComment(""));
-        } catch (e) {
-            console.log(e);
-        }
-    };
+    try{
+     postComments(pinId, inputComment)
+    .then(setInputComment(''))
+    }catch(e){
+      console.log(e)
+    }
+  }
 
     return (
         <Div>
