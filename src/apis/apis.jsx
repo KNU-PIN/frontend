@@ -4,10 +4,17 @@ import { useNavigate } from "react-router-dom";
 const BASE_URL = `/api/v1/pinboard`;
 
 export async function getPinData(types, keyword) {
+    let modifiedTypes = types.join();
+
+    if (types.length === 0) {
+        modifiedTypes = "free,gathering,buy";
+    }
+
+    console.log(modifiedTypes);
     try {
         const response = await axios.get(`${BASE_URL}/searchpin`, {
             params: {
-                types: types,
+                types: modifiedTypes,
                 keyword: keyword,
             },
         });

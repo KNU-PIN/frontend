@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useState } from "react";
 import Modal from "./Modal";
 import FilterInputCategory from "./FilterInputCategory";
-import "./Image.css";
 import WriteButton from "./WriteButton";
 import { getBoard, getPinData } from "../../apis/apis";
 import WriteModal from "./WriteModal";
@@ -13,7 +12,7 @@ const { kakao } = window;
 function Map() {
     const [modalOpen, setModalOpen] = useState(false);
     const [keyword, setKeyword] = useState("");
-    const [type, setType] = useState("free, gathering, buy");
+    const [type, setType] = useState([]);
     const [pinData, setPinData] = useState([]);
     const [boardData, setBoardData] = useState([]);
     const [isWriteButotnClicked, setIsWriteButtonClicked] = useState(false);
@@ -27,14 +26,14 @@ function Map() {
         setPinData(Object.values(pinData));
     };
 
+    //초기 화면 설정입니다.
     useEffect(() => {
         LoadPin(type, keyword);
-        console.log(keyword);
+        //검색 했을 때도 정보를 가져옵니다.
     }, [type, keyword]);
 
     //핀을 클릭했을 때 주위의 보드 데이터를 가져옵니다.
     const LoadBoard = async (type, latitude, longitude, keyword) => {
-        console.log(type, keyword);
         const boardList = await getBoard(type, latitude, longitude, keyword);
         setBoardData(boardList);
     };
@@ -56,6 +55,7 @@ function Map() {
             center: new kakao.maps.LatLng(35.890264, 128.610712), //지도의 중심좌표.
             level: 5, //지도의 레벨(확대, 축소 정도)
         };
+
         const map = new kakao.maps.Map(container, options); //지도를 생성합니다.
 
         //핀의 색깔 이미지 주소입니다.
@@ -63,35 +63,7 @@ function Map() {
         var greenImage = process.env.PUBLIC_URL + "img/green.png";
         var yellowImage = process.env.PUBLIC_URL + "img/yellow.png";
 
-        //글 작성 버튼을 클릭하면 핀을 생성할 위치를 선택합니다.
-        function setPin() {
-            var marker = new kakao.maps.Marker({
-                // 지도 중심좌표에 마커를 생성합니다
-                position: map.getCenter(),
-            });
-            // 지도에 마커를 표시합니다
-            marker.setMap(map);
-
-            kakao.maps.event.addListener(map, "click", function (mouseEvent) {
-                // 클릭한 위도, 경도 정보를 가져옵니다
-                var latlng = mouseEvent.latLng;
-
-                // 마커 위치를 클릭한 위치로 옮깁니다
-                marker.setPosition(latlng);
-
-                setMyLat(latlng.getLat());
-                setMyLng(latlng.getLng());
-                setLocation(true);
-
-                console.log(myLat, myLng);
-            });
-        }
-
-        if (isWriteButotnClicked) {
-            setPin();
-        }
-
-        //지도에 핀 표시
+        //핀데이터들의 모든 핀을 지도에 표시해줍니다.
         for (let i = 0; i < pinData.length; i++) {
             // 핀 이미지의 이미지 크기 입니다
 
@@ -110,51 +82,45 @@ function Map() {
                     pinSrc = yellowImage;
             }
 
-            //핀 이미지 생성
-            var markerImage = new kakao.maps.MarkerImage(
-                pinSrc,
-                new kakao.maps.Size(50, 50)
-            );
-
-            //핀 표시
+            //핀 정보
             const marker = new kakao.maps.Marker({
                 map: map, // 마커를 표시할 지도
                 position: new kakao.maps.LatLng(
                     pinData[i].latitude,
                     pinData[i].longitude
-                ), // 마커를 표시할 위치
-                //title: pinData[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
-                image: markerImage, // 마커 이미지
+                ),
+                image: new kakao.maps.MarkerImage(
+                    pinSrc,
+                    new kakao.maps.Size(50, 50)
+                ),
                 //마커를 클릭할 수 있게 해주며 지도가 클리되지 않게 해줍니다.
                 clickable: true,
             });
 
+            //핀 표시
             marker.setMap(map);
-
-            //핀 위의 이미지 핀
-            var Image = new kakao.maps.MarkerImage(
-                pinData[i].img_src,
-                new kakao.maps.Size(20, 20),
-                {
-                    offset: new kakao.maps.Point(9, 37),
-                }
-            );
 
             //이미지 핀 표시
             const imageMarker = new kakao.maps.Marker({
-                map: map, // 마커를 표시할 지도
+                map: map,
                 position: new kakao.maps.LatLng(
                     pinData[i].latitude,
                     pinData[i].longitude
-                ), // 마커를 표시할 위치
-                //title: pinData[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
-                image: Image, // 마커 이미지
-                //마커를 클릭할 수 있게 해주며 지도가 클리되지 않게 해줍니다.
+                ),
+                image: new kakao.maps.MarkerImage(
+                    pinData[i].img_src,
+                    new kakao.maps.Size(20, 20),
+                    {
+                        offset: new kakao.maps.Point(9, 37),
+                    }
+                ),
+                //이미지를 클릭할 수 있게 해주며 지도가 클리되지 않게 해줍니다.
                 clickable: true,
             });
 
             imageMarker.setMap(map);
 
+            //핀에 클릭이벤트를 생성해줍니다.
             //핀 이미지 클릭 하면 모달이 올라옵니다.
             kakao.maps.event.addListener(marker, "click", function () {
                 //근처 핀들을 불러옵니다.
@@ -168,6 +134,7 @@ function Map() {
                 showModal();
             });
 
+            //핀 안의 이미지에 클릭이벤트를 생성해줍니다.
             kakao.maps.event.addListener(imageMarker, "click", function () {
                 //근처 핀들을 불러옵니다.
                 LoadBoard(
@@ -176,7 +143,6 @@ function Map() {
                     pinData[i].longitude,
                     keyword
                 );
-                console.log(boardData);
                 //모달을 켜줍니다.
                 showModal();
             });
@@ -187,8 +153,52 @@ function Map() {
             });
         }
 
-        // 마커가 생성될때 바로 화면상에 새로생성된 마커를 보여주기 위해 배열안에 props를 넣어놨습니다.
-    }, [pinData, type, keyword, boardData, isWriteButotnClicked, myLat, myLng]);
+        //글 작성 버튼을 눌렀을 때 글을 쓸 핀을 위치시키는 함수입니다.
+        function setPin() {
+            var marker = new kakao.maps.Marker({
+                position: map.getCenter(),
+            });
+            // 지도에 핀을 표시합니다
+            marker.setMap(map);
+
+            var content =
+                '<div class="customoverlay">' +
+                '    <span class="title">글을 쓸 장소를 클릭해주세요!</span>' +
+                "</div>";
+
+            // 커스텀 오버레이를 생성합니다
+            var info = new kakao.maps.CustomOverlay({
+                map: map,
+                position: marker.getPosition(),
+                content: content,
+            });
+
+            //커스텀 오버레이는 1초 뒤 사라집니다.
+            setTimeout(function () {
+                info.setMap(null);
+            }, 1000);
+
+            kakao.maps.event.addListener(map, "click", function (mouseEvent) {
+                // 클릭한 위도, 경도 정보를 가져옵니다
+                var latlng = mouseEvent.latLng;
+
+                // 마커 위치를 클릭한 위치로 옮깁니다
+                marker.setPosition(latlng);
+
+                setMyLat(latlng.getLat());
+                setMyLng(latlng.getLng());
+                setLocation(true);
+            });
+        }
+
+        //글쓰기 버튼을 클릭하면 글을 작성할 위치에 핀을 가져다 놓습니다.
+        if (isWriteButotnClicked) {
+            setPin();
+        }
+
+        // 마커가 생성될때 바로 화면상에 새로생성된 마커를 보여주기 위해 배열안에 pinData를 넣어줍니다.
+    }, [pinData, type, keyword, isWriteButotnClicked]);
+
     return (
         <MapWrap>
             <div
@@ -206,13 +216,14 @@ function Map() {
             ></div>
             {/* 키워드 검색 */}
             <FilterInputCategory
+                type={type}
                 setKeyword={setKeyword}
                 setType={setType}
             ></FilterInputCategory>
             {/* 모달창을 끌 수 있게 하기 위해 props로 setModalOpen을 내려줍니다. */}
-            {modalOpen && (
-                <Modal visible={modalOpen} boardData={boardData}></Modal>
-            )}
+
+            <Modal visible={modalOpen} boardData={boardData}></Modal>
+
             <WriteButton
                 setIsWriteButtonClicked={setIsWriteButtonClicked}
             ></WriteButton>
@@ -231,11 +242,6 @@ function Map() {
 const MapWrap = styled.div`
     //카테고리 버튼들의 absolute 정렬을 위해 realtive 필요함.
     /* position: relative; */
-
-    //자식 요소 가운데 정렬
-    display: flex;
-    justify-content: center;
-
     overflow: hidden;
     width: 100vw;
     height: 100vh;
