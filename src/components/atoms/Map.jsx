@@ -12,7 +12,7 @@ const { kakao } = window;
 function Map() {
     const [modalOpen, setModalOpen] = useState(false);
     const [keyword, setKeyword] = useState("");
-    const [type, setType] = useState("free, gathering, buy");
+    const [type, setType] = useState([]);
     const [pinData, setPinData] = useState([]);
     const [boardData, setBoardData] = useState([]);
     const [isWriteButotnClicked, setIsWriteButtonClicked] = useState(false);
@@ -216,13 +216,14 @@ function Map() {
             ></div>
             {/* 키워드 검색 */}
             <FilterInputCategory
+                type={type}
                 setKeyword={setKeyword}
                 setType={setType}
             ></FilterInputCategory>
             {/* 모달창을 끌 수 있게 하기 위해 props로 setModalOpen을 내려줍니다. */}
-            {modalOpen && (
-                <Modal visible={modalOpen} boardData={boardData}></Modal>
-            )}
+
+            <Modal visible={modalOpen} boardData={boardData}></Modal>
+
             <WriteButton
                 setIsWriteButtonClicked={setIsWriteButtonClicked}
             ></WriteButton>

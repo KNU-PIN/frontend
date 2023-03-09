@@ -1,16 +1,26 @@
 import React from "react";
 import { BiCommentDots } from "react-icons/bi";
 import { BsSuitHeart } from "react-icons/bs";
-import styled, { keyframes } from "styled-components";
+import styled, { keyframes, css } from "styled-components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
-const modalSlideUp = keyframes`
-  0%{
-    bottom:-25%;
+const slideUp = keyframes`
+  from {
+    transform: translateY(500px);
   }
-  100%{
-    bottom:0;
+  to {
+    transform: translateY(0px);
+  }
+`;
+
+const slideDown = keyframes`
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(500px);
   }
 `;
 
@@ -31,7 +41,18 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    animation: ${modalSlideUp} 0.5s;
+    /* 스랄이드 업 */
+    animation-duration: 0.25s;
+    animation-timing-function: ease-out;
+    animation-name: ${slideUp};
+    animation-fill-mode: forwards;
+
+    /* 슬라이드 다운 */
+    ${(props) =>
+        props.disappear &&
+        css`
+            animation-name: ${slideDown};
+        `}
 `;
 
 const Header = styled.div`
@@ -74,8 +95,8 @@ const Image = styled.img`
     border-radius: 1em;
 
     /* 수정 필요 : 세로에 맞는 가로 사이즈 구해야함 */
-    width: 20%;
-    height: 90%;
+    width: 95px;
+
     /* height: 95%; */
     object-fit: cover;
     margin-right: 20px;
@@ -155,25 +176,34 @@ function Item({ pin }) {
     );
 }
 
-export default function Modal({ setModalOpen, boardData }) {
-    //모달창 끄기
-    // const closeModal = () => {
-    //     setModalOpen(false);
-    // };
-
-    console.log(boardData);
-
+export default function Modal({ visible, boardData }) {
     //좋아요 순, 댓글 순, 최신 순
     const [order, setOrder] = useState("likeCnt");
     const sortedBoardDatas = boardData.sort((a, b) => b[order] - a[order]);
+
+    //현재 트랜지션 효과를 보여주고 있는 중이라는 상태를 의미하는 animate입니다.
+    const [animate, setAnimate] = useState(false);
+    //실제로 컴포넌트가 사라지는 시점을 지연시키기 위한 localVisible 값입니다.
+    const [localVisible, setLocalVisible] = useState(visible);
+
+    //visible 값이 true 에서 false 로 바뀌는 시점을 감지하여 animate 값을 true 로 바꿔주고
+    //setTimeout 함수를 사용하여 250ms 이후 false로 바꿔줍니다.
+    useEffect(() => {
+        // visible 값이 true -> false 가 되는 것을 감지
+        if (localVisible && !visible) {
+            setAnimate(true);
+            setTimeout(() => setAnimate(false), 250);
+        }
+        setLocalVisible(visible);
+    }, [localVisible, visible]);
 
     const handleSelect = (e) => {
         console.log(e.target.value);
         setOrder(e.target.value);
     };
-
+    if (!animate && !localVisible) return null;
     return (
-        <Container>
+        <Container disappear={!visible}>
             <Header>
                 <PinTitle>PIN 게시글</PinTitle>
                 <Select name="order" onChange={handleSelect}>
