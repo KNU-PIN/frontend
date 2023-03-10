@@ -5,7 +5,7 @@ import PostDetail from "./pages/PostDetail";
 function App() {
     return (
         <div className="App">
-            <Routes basename={process.env.PUBLIC_URL}>
+            <Routes>
                 <Route path="/" element={<Pinboard />} />
                 {/* <Route path="/Pinboard" element={<Pinboard />} /> */}
                 <Route
