@@ -1,10 +1,8 @@
-import styled, { keyframes, css } from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { THEME } from "../../constants/colors";
 import React, { useState } from "react";
 import FileInput from "./FileInput";
 import { createPin } from "../../apis/apis";
-import { darken, lighten } from "polished";
-import { useEffect } from "react";
 
 const INITIAL_VALUES = {
     title: "",
@@ -19,21 +17,6 @@ const INITIAL_VALUES = {
 export default function WriteModal(props) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submittingError, setSubmittingError] = useState(null);
-    //현재 트랜지션 효과를 보여주고 있는 중이라는 상태를 의미하는 animate입니다.
-    const [animate, setAnimate] = useState(false);
-    //실제로 컴포넌트가 사라지는 시점을 지연시키기 위한 localVisible 값입니다.
-    const [localVisible, setLocalVisible] = useState(props.visible);
-
-    const typeButtonInfo = [
-        { value: "free", name: "type", color: "#ff6868", text: "자유글" },
-        {
-            value: "gathering",
-            name: "type",
-            color: "#f3ec65",
-            text: "구인구직",
-        },
-        { value: "buy", name: "type", color: "#6ee36e", text: "장터" },
-    ];
 
     const [values, setValues] = useState({
         title: "",
@@ -51,6 +34,7 @@ export default function WriteModal(props) {
             [name]: value,
         }));
     };
+
     const handleInputChange = (e) => {
         e.preventDefault();
         const { name, value } = e.target;
@@ -93,21 +77,9 @@ export default function WriteModal(props) {
         props.setIsWriteButtonClicked(false);
     };
 
-    //visible 값이 true 에서 false 로 바뀌는 시점을 감지하여 animate 값을 true 로 바꿔주고
-    //setTimeout 함수를 사용하여 250ms 이후 false로 바꿔줍니다.
-    useEffect(() => {
-        // visible 값이 true -> false 가 되는 것을 감지
-        if (localVisible && !props.visible) {
-            setAnimate(true);
-            setTimeout(() => setAnimate(false), 500);
-        }
-        setLocalVisible(props.visible);
-    }, [localVisible, props.visible]);
-
     // const navigate = useNavigate();
-    if (!animate && !localVisible) return null;
     return (
-        <Container disappear={!props.visible}>
+        <Container>
             <Header>
                 <PinTitle>
                     PIN 카테고리 선택&nbsp;
@@ -123,23 +95,27 @@ export default function WriteModal(props) {
             </Header>
             <FormWrapper>
                 <Category>
-                    {/*  name="type"
+                    <FreeButton
+                        name="type"
                         value="free"
-                        onClick={handleInputChange} */}
-                    {typeButtonInfo.map((e, i) => {
-                        return (
-                            <TypeButton
-                                name={e.name}
-                                key={i}
-                                value={e.value}
-                                onClick={handleInputChange}
-                                color={e.color}
-                                values={values}
-                            >
-                                {e.text}
-                            </TypeButton>
-                        );
-                    })}
+                        onClick={handleInputChange}
+                    >
+                        자유
+                    </FreeButton>
+                    <GatheringButton
+                        name="type"
+                        value="gathering"
+                        onClick={handleInputChange}
+                    >
+                        구인구직
+                    </GatheringButton>
+                    <BuyButton
+                        name="type"
+                        value="buy"
+                        onClick={handleInputChange}
+                    >
+                        장터
+                    </BuyButton>
                 </Category>
                 <FileInput
                     name="images"
@@ -223,16 +199,6 @@ const modalSlideUp = keyframes`
     transform: none;
   }
 `;
-
-const slideDown = keyframes`
-  from {
-    transform: translateY(0px);
-  }
-  to {
-    transform: translateY(800px);
-  }
-`;
-
 const Container = styled.div`
     border-radius: 4em 4em 0 0;
     width: 100%;
@@ -251,51 +217,61 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
     animation: ${modalSlideUp} 0.5s ease-out;
-
-    /* 슬라이드 다운 */
-    ${(props) =>
-        props.disappear &&
-        css`
-            animation-name: ${slideDown};
-        `}
 `;
 
-const TypeButton = styled.button`
-    color: black;
-    font-weight: bold;
+const FreeButton = styled.button`
+    color: white;
+    width: 30%;
+    height: 3rem;
+    margin-right: 0.5em;
+    font-size: 20px;
+    border: none;
+    border-radius: 0.5em;
+    background-color: #ff6868;
+    letter-spacing: 0.5px;
+    &:focus {
+        outline: none;
+        border: 4px solid ${THEME.primary};
+    }
+`;
+
+const GatheringButton = styled.button`
+    color: white;
     width: 30%;
     height: 3rem;
     font-size: 20px;
     border: none;
     border-radius: 0.5em;
+    background-color: #ffdb5b;
     letter-spacing: 0.5px;
+    &:focus {
+        outline: none;
+        border: 4px solid ${THEME.primary};
+    }
+`;
 
-    ${(props) => {
-        const selected = props.color;
-        return css`
-            background: ${selected};
-            &:hover {
-                background: ${lighten(0.1, selected)};
-            }
-            &:active {
-                background: ${darken(0.1, selected)};
-            }
-        `;
-    }}
-    ${(props) => {
-        if (props.values.type === props.value)
-            return css`
-                border: 3px solid black;
-            `;
-    }}
+const BuyButton = styled.button`
+    color: white;
+    width: 30%;
+    height: 3rem;
+    margin-left: 0.5em;
+    font-size: 20px;
+    border: none;
+    border-radius: 0.5em;
+    background-color: #6ee36e;
+    letter-spacing: 0.5px;
+    &:focus {
+        outline: none;
+        border: 4px solid ${THEME.primary};
+    }
 `;
 const Category = styled.div`
     display: flex;
     //자식 요소 가운데 정렬을 위해 가로 100을 주고 justify-content설정 해줍니다.
     //justify-conetnet에는 space-envenly, space-around, space-between등의 설정도 있습니다.
     margin-top: 2em;
-    width: 93%;
-    justify-content: space-between;
+    width: 100%;
+    justify-content: center;
 `;
 
 const FormWrapper = styled.div`
