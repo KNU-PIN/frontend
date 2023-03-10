@@ -17,9 +17,9 @@ export default function FilterInputCategory({ type, setType, setKeyword }) {
         setKeyword(inputTag.current.value || "");
     };
 
-    const typeButtonInfo = [
+    let typeButtonInfo = [
         { value: "free", color: "#ff6868", text: "자유글" },
-        { value: "gathering", color: "#f3ec65", text: "구인구직" },
+        { value: "gathering", color: "#e2ff08", text: "구인구직" },
         { value: "buy", color: "#6ee36e", text: "장터" },
     ];
 
@@ -128,7 +128,6 @@ const TypeButton = styled.button`
     font-weight: bold;
     border: none;
     border-radius: 5px;
-    cursor: pointer;
     //background-color: ${(props) => props.color ?? "#fff"};
     letter-spacing: 0.5px;
     ${(props) => {

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = `/api/v1/pinboard`;
 
@@ -9,6 +10,7 @@ export async function getPinData(types, keyword) {
         modifiedTypes = "free,gathering,buy";
     }
 
+    console.log(modifiedTypes);
     try {
         const response = await axios.get(`${BASE_URL}/searchpin`, {
             params: {
@@ -51,76 +53,70 @@ export async function createPin(formData) {
 
 //게시글 상세 페이지(postDetail.jsx)
 //게시글 내용을 불러오는 API입니다.
-export async function getBoardInfo(pinId) {
-    try {
+export async function getBoardInfo(pinId){
+    try{
         const response = await axios.get(`/api/v1/pinboard/${pinId}`);
         return response.data;
-    } catch (e) {
-        console.log(e);
+    }catch(e){
+        console.log(e)
     }
 }
 
 //게시글 댓글 정보를 불러오는 API입니다.
-export async function getBoardComments(pinId) {
-    try {
+export async function getBoardComments(pinId){
+    try{
         const response = await axios.get(`/api/v1/comment/${pinId}`);
         return response.data;
-    } catch (e) {
-        console.log(e);
+    }catch(e){
+        console.log(e)
     }
 }
 
 //게시글 공감을 누르는 API입니다.
-export async function postClickHeart(pinId) {
-    try {
-        const response = await axios.post(
-            "/api/v1/pinboard/ddabong",
-            JSON.stringify({
-                pinId: pinId,
-            }),
-            {
-                headers: {
-                    "Content-Type": `application/json`,
-                    Conte: "applic",
-                },
-            }
-        );
-        return response.data;
-    } catch (e) {
-        console.log(e);
+export async function postClickHeart(pinId){
+    try{
+        const response = await axios.post('/api/v1/pinboard/ddabong',JSON.stringify({
+            pinId:pinId
+          }),
+          {
+            headers:{
+            "Content-Type":`application/json`,
+            "Conte":"applic",
+          }
+        })
+        return response.data
+    }catch(e){
+        console.log(e)
     }
 }
 
 //게시글을 삭제하는 API입니다.
-export async function deletePost(pinId, password, navigate) {
-    await axios
-        .delete(`/api/v1/pinboard/${pinId}`, {
-            data: {
-                pw: password,
-            },
-        })
-        .then((res) => alert("게시글이 삭제되었습니다."))
-        .then((res) => navigate(-1))
-        .catch((e) => alert("비밀번호가 틀립니다."));
+export async function deletePost(pinId,password,navigate){
+    await axios.delete(`/api/v1/pinboard/${pinId}`,{
+        data:{
+          pw:password
+        }
+      })
+      .then(res => alert('게시글이 삭제되었습니다.'))
+      .then(res => navigate(-1))
+      .catch(e => alert('비밀번호가 틀립니다.'))
 }
 
 //게시글 댓글다는 API입니다.
-export async function postComments(pinId, inputComment) {
-    try {
-        axios.post(
-            "/api/v1/comment/create",
-            JSON.stringify({
-                pinId: pinId,
-                contents: inputComment,
-            }),
-            {
-                headers: {
-                    "Content-Type": `application/json`,
-                    Conte: "applic",
-                },
-            }
-        );
-    } catch (e) {
-        console.log(e);
+export async function postComments(pinId, inputComment){
+    try{
+        axios.post('/api/v1/comment/create',JSON.stringify({
+            pinId:pinId,
+            contents:inputComment
+          }),
+          {
+            headers:{
+            "Content-Type":`application/json`,
+            "Conte":"applic",
+          }
+        })
+    }catch(e){
+        console.log(e)
     }
+   
 }
