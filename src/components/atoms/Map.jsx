@@ -223,18 +223,17 @@ function Map() {
             {/* 모달창을 끌 수 있게 하기 위해 props로 setModalOpen을 내려줍니다. */}
 
             <Modal visible={modalOpen} boardData={boardData}></Modal>
-
             <WriteButton
                 setIsWriteButtonClicked={setIsWriteButtonClicked}
             ></WriteButton>
-            {location && (
-                <WriteModal
-                    setLocation={setLocation}
-                    setIsWriteButtonClicked={setIsWriteButtonClicked}
-                    myLat={myLat}
-                    myLng={myLng}
-                ></WriteModal>
-            )}
+
+            <WriteModal
+                visible={location}
+                setLocation={setLocation}
+                setIsWriteButtonClicked={setIsWriteButtonClicked}
+                myLat={myLat}
+                myLng={myLng}
+            ></WriteModal>
         </MapWrap>
     );
 }

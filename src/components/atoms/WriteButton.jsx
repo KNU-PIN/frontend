@@ -3,15 +3,13 @@ import React from "react";
 
 export default function WriteButton({ setIsWriteButtonClicked }) {
     return (
-        <>
-            <StyledButton
-                onClick={() => {
-                    setIsWriteButtonClicked(true);
-                }}
-            >
-                <Img src={process.env.PUBLIC_URL + "/img/Button.jpg"}></Img>
-            </StyledButton>
-        </>
+        <StyledButton
+            onClick={() => {
+                setIsWriteButtonClicked(true);
+            }}
+        >
+            <Img src={process.env.PUBLIC_URL + "/img/Button.jpg"}></Img>
+        </StyledButton>
     );
 }
 const Img = styled.img`
@@ -23,13 +21,17 @@ const Img = styled.img`
 const StyledButton = styled.button`
     position: absolute;
     bottom: 10px;
-    right: 10px;
+    right: 15px;
 
     padding: 0;
     z-index: 1;
 
     border: none;
     border-radius: 15px;
+
+    &:hover {
+        transform: scale(1.1, 1.1);
+    }
 
     cursor: pointer;
 `;
