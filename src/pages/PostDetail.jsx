@@ -2,12 +2,18 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { THEME } from "../constants/colors";
 
-import styled,{keyframes} from "styled-components";
-import {BsSuitHeart, BsSuitHeartFill} from "react-icons/bs"
-import {RiSendPlane2Fill} from "react-icons/ri"
-import {MdOutlineCancel} from "react-icons/md"
-import PostSlider from '../components/atoms/PostSlider';
-import { getBoardInfo, getBoardComments, postClickHeart, deletePost, postComments} from '../apis/apis';
+import styled, { keyframes } from "styled-components";
+import { BsSuitHeart, BsSuitHeartFill } from "react-icons/bs";
+import { RiSendPlane2Fill } from "react-icons/ri";
+import { MdOutlineCancel } from "react-icons/md";
+import PostSlider from "../components/atoms/PostSlider";
+import {
+    getBoardInfo,
+    getBoardComments,
+    postClickHeart,
+    deletePost,
+    postComments,
+} from "../apis/apis";
 
 function PostDetail() {
     const [inputComment, setInputComment] = useState("");
@@ -32,59 +38,57 @@ function PostDetail() {
     const navigate = useNavigate();
     const { pinId } = useParams();
 
-  useEffect(()=>{
-    //게시글 정보 
-    getBoardInfo(pinId)
-    .then(data=>{
-      setPostData({...postData, 
-        latitude:data.latitude,
-        longitude:data.longitude,
-        title:data.title,
-        contents:data.contents,
-        type:data.type,
-        images:data.images,
-        createdAt:data.createdAt,
-        like:data.like,
-        isliked:data.isliked
-      });
-      setHeart({...heart, count:data.like, isliked:data.isliked})
-      ;}
-    );
-  //게시글 댓글 정보
-  getBoardComments(pinId)
-  .then(data=>{
-    setCommentsData(data.comments)
-  })
-  },[inputComment])
+    useEffect(() => {
+        //게시글 정보
+        getBoardInfo(pinId).then((data) => {
+            setPostData({
+                ...postData,
+                latitude: data.latitude,
+                longitude: data.longitude,
+                title: data.title,
+                contents: data.contents,
+                type: data.type,
+                images: data.images,
+                createdAt: data.createdAt,
+                like: data.like,
+                isliked: data.isliked,
+            });
+            setHeart({ ...heart, count: data.like, isliked: data.isliked });
+        });
+        //게시글 댓글 정보
+        getBoardComments(pinId).then((data) => {
+            setCommentsData(data.comments);
+        });
+    }, [inputComment, heart, pinId, postData]);
 
-  const onClickHeart=()=>{
-    postClickHeart(pinId)
-    .then(data=>setHeart({...heart, count:data, isliked:true}))
-  }
+    const onClickHeart = () => {
+        postClickHeart(pinId).then((data) =>
+            setHeart({ ...heart, count: data, isliked: true })
+        );
+    };
 
-  const onClickDeleteModal=()=>{
-     setDeleteModal(true)
-  }
-  const onClickCancelDelete=()=>{
-    setDeleteModal(false)
-  }
-  const onClickDeletePost=()=>{
-      deletePost(pinId, password,navigate)
-    }
-  
-  const onClickCommentsSubmit=()=>{
-    if (inputComment===""){
-      alert("내용을 입력해주세요.");
-      return;
-    }
+    const onClickDeleteModal = () => {
+        setDeleteModal(true);
+    };
+    const onClickCancelDelete = () => {
+        setDeleteModal(false);
+    };
+    const onClickDeletePost = () => {
+        deletePost(pinId, password, navigate);
+    };
 
-    try{
-     postComments(pinId, inputComment)
-    .then(setInputComment(''))
-    }catch(e){
-      console.log(e)
-    }
-  }
+    const onClickCommentsSubmit = () => {
+        if (inputComment === "") {
+            alert("내용을 입력해주세요.");
+            return;
+        }
+
+        try {
+            postComments(pinId, inputComment).then(setInputComment(""));
+        } catch (e) {
+            console.log(e);
+        }
+    };
 
     return (
         <Div>
