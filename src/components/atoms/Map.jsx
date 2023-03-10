@@ -59,9 +59,9 @@ function Map() {
         const map = new kakao.maps.Map(container, options); //지도를 생성합니다.
 
         //핀의 색깔 이미지 주소입니다.
-        var redImage = process.env.PUBLIC_URL + "img/red.png";
-        var greenImage = process.env.PUBLIC_URL + "img/green.png";
-        var yellowImage = process.env.PUBLIC_URL + "img/yellow.png";
+        var redImage = process.env.PUBLIC_URL + "/img/red.png";
+        var greenImage = process.env.PUBLIC_URL + "/img/green.png";
+        var yellowImage = process.env.PUBLIC_URL + "/img/yellow.png";
 
         //핀데이터들의 모든 핀을 지도에 표시해줍니다.
         for (let i = 0; i < pinData.length; i++) {
