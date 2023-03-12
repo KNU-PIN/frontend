@@ -60,7 +60,7 @@ export default function WriteModal(props) {
     //완료 버튼 클릭 시 일어나는 Submit입니다.
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        
         //폼데이터에 모든 데이터들을 담습니다.
         const formData = new FormData();
         for (let key in values) {
@@ -70,6 +70,9 @@ export default function WriteModal(props) {
         for (let i = 0; i < values.images.length; i++) {
             formData.append("images[]", values.images[i]);
         }
+        // for (var key of formData.entries()) {
+        //     console.log(key[0] + ', ' + key[1]);
+        // }
         //전송합니다.
         try {
             setSubmittingError(null);
@@ -85,6 +88,7 @@ export default function WriteModal(props) {
         }
         //모든 값을 초기화해줍니다.
         setValues(INITIAL_VALUES);
+        props.setWriteComplete(true);
     };
 
     //취소 핸들러입니다.
@@ -102,10 +106,16 @@ export default function WriteModal(props) {
             setTimeout(() => setAnimate(false), 500);
         }
         setLocalVisible(props.visible);
+        setValues((prevValues) => ({
+            ...prevValues,
+            latitude: props.myLat,
+            longitude:props.myLng
+        }));
     }, [localVisible, props.visible]);
 
     // const navigate = useNavigate();
     if (!animate && !localVisible) return null;
+    
     return (
         <Container disappear={!props.visible}>
             <Header>

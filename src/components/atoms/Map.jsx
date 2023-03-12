@@ -19,6 +19,7 @@ function Map() {
     const [location, setLocation] = useState(false);
     const [myLat, setMyLat] = useState();
     const [myLng, setMyLng] = useState();
+    const [writeComplete, setWriteComplete]=useState(false);
 
     //초기 화면에 핀을 뿌려줍니다.
     const LoadPin = async (type, keyword) => {
@@ -30,7 +31,7 @@ function Map() {
     useEffect(() => {
         LoadPin(type, keyword);
         //검색 했을 때도 정보를 가져옵니다.
-    }, [type, keyword]);
+    }, [type, keyword, writeComplete]);
 
     //핀을 클릭했을 때 주위의 보드 데이터를 가져옵니다.
     const LoadBoard = async (type, latitude, longitude, keyword) => {
@@ -233,6 +234,7 @@ function Map() {
                 setIsWriteButtonClicked={setIsWriteButtonClicked}
                 myLat={myLat}
                 myLng={myLng}
+                setWriteComplete={setWriteComplete}
             ></WriteModal>
         </MapWrap>
     );

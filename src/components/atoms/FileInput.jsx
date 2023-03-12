@@ -33,7 +33,7 @@ function FileInput({ name, value, onChange }) {
         };
     }, [value]);
 
-    const placeholderImage = process.env.PUBLIC_URL + "img/imageInput.png";
+    const placeholderImage = process.env.PUBLIC_URL + "/img/imageInput.png";
 
     return (
         <Div>
@@ -51,7 +51,7 @@ function FileInput({ name, value, onChange }) {
             {value && (
                 <ClearButton onClick={handleClearClick}>
                     <ClearButtonImg
-                        src={process.env.PUBLIC_URL + "img/reset.png"}
+                        src={process.env.PUBLIC_URL + "/img/reset.png"}
                         alt="선택해제"
                     ></ClearButtonImg>
                 </ClearButton>
