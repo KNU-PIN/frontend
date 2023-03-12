@@ -111,7 +111,7 @@ export default function WriteModal(props) {
             latitude: props.myLat,
             longitude:props.myLng
         }));
-    }, [localVisible, props.visible]);
+    }, [localVisible, props.visible, props.myLat, props.myLng]);
 
     // const navigate = useNavigate();
     if (!animate && !localVisible) return null;
