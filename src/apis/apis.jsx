@@ -1,4 +1,5 @@
 import axios from "axios";
+import swal from "sweetalert";
 
 const BASE_URL = `/api/v1/pinboard`;
 
@@ -100,9 +101,9 @@ export async function deletePost(pinId, password, navigate) {
                 pw: password,
             },
         })
-        .then((res) => alert("게시글이 삭제되었습니다."))
+        .then((res) => swal("삭제 완료!", "게시글이 삭제되었습니다.", "success"))
         .then((res) => navigate(-1))
-        .catch((e) => alert("비밀번호가 틀립니다."));
+        .catch((e) => swal("오류!", "비밀번호가 맞지 않습니다.", "warning"));
 }
 
 //게시글 댓글다는 API입니다.
