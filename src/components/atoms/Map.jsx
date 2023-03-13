@@ -19,7 +19,7 @@ function Map() {
     const [location, setLocation] = useState(false);
     const [myLat, setMyLat] = useState();
     const [myLng, setMyLng] = useState();
-    const [writeComplete, setWriteComplete]=useState(false);
+    const [writeComplete, setWriteComplete] = useState(false);
 
     //초기 화면에 핀을 뿌려줍니다.
     const LoadPin = async (type, keyword) => {
@@ -188,6 +188,8 @@ function Map() {
 
                 setMyLat(latlng.getLat());
                 setMyLng(latlng.getLng());
+                console.log("위치는 : ");
+                console.log(latlng);
                 setLocation(true);
             });
         }
