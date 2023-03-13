@@ -73,7 +73,8 @@ export default function WriteModal(props) {
       if (key === "images") continue;
       formData.append(key, values[key]);
     }
-    if (images != null) { // 이미지가 있어야만 폼데이터에 append
+    if (images != null) {
+      // 이미지가 있어야만 폼데이터에 append
       for (let i = 0; i < values.images.length; i++) {
         formData.append("images[]", values.images[i]);
       }
@@ -84,10 +85,11 @@ export default function WriteModal(props) {
     //전송합니다.
     if (!isValidInput || !isValidPassword || !isValidType) {
       // 빈칸이 존재할 경우 alert창 띄우기
-      swal("Error!", "please fill in the blanks", "warning");
+      swal("작성 오류!", "태그를 선택하지 않았거나 제목, 내용이 비어있어요.", "warning");
     } else {
       try {
-        swal("글쓰기 완료!", "success");
+        // 게시글 작성 성공
+        swal("작성 완료!", "앞으로도 계속 작성해주세요 :)", "success");
         setSubmittingError(null);
         setIsSubmitting(true);
         await createPin(formData);
@@ -107,6 +109,9 @@ export default function WriteModal(props) {
 
   //취소 핸들러입니다.
   const handleCancel = () => {
+    // 게시글 작성창을 닫고 열었을때 초기화되어야 함.
+    setValues(INITIAL_VALUES);
+    props.setWriteComplete(true);
     props.setLocation(false);
     props.setIsWriteButtonClicked(false);
   };
