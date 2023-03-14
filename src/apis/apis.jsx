@@ -28,10 +28,15 @@ export async function getPinData(types, keyword) {
 }
 
 export async function getBoard(type, latitude, longitude, keyword) {
+    let modifiedType = type.join();
+
+    if (type.length === 0) {
+        modifiedType = "free,gathering,buy";
+    }
     try {
         const response = await axios.get(`${BASE_URL}/searchboard`, {
             params: {
-                type: type,
+                type: modifiedType,
                 keyword: keyword,
                 latitude: latitude,
                 longitude: longitude,
@@ -101,7 +106,9 @@ export async function deletePost(pinId, password, navigate) {
                 pw: password,
             },
         })
-        .then((res) => swal("삭제 완료!", "게시글이 삭제되었습니다.", "success"))
+        .then((res) =>
+            swal("삭제 완료!", "게시글이 삭제되었습니다.", "success")
+        )
         .then((res) => navigate(-1))
         .catch((e) => swal("오류!", "비밀번호가 맞지 않습니다.", "warning"));
 }

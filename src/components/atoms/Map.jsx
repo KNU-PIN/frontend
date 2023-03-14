@@ -29,6 +29,7 @@ function Map() {
 
     //초기 화면 설정입니다.
     useEffect(() => {
+        console.log(type);
         LoadPin(type, keyword);
         //검색 했을 때도 정보를 가져옵니다.
     }, [type, keyword, writeComplete]);
