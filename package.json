@@ -1,6 +1,5 @@
 {
   "name": "frontend",
-  "homepage": "https://knu-pin.github.io/frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
